@@ -43,7 +43,7 @@
 					<tr>
 						<td colspan="2" style="padding:5% 9% 3% 3%" align="right">
 							<a href="">Forgot Password ?</a>&nbsp;&nbsp;&nbsp;
-							<a href="registration.html">Sign Up</a>
+							<a href="registration.jsp">Sign Up</a>
 						</td>
 					</tr>
 				</table>
