@@ -9,11 +9,29 @@ public class LoadMain
 	public static void main(String[] args) 
 	{
 		LoadMain obj=new LoadMain();
+		obj.monitorRoutingTable();
 		while(true)
 		{
 			Message mObj=new Message();
 			obj.processRequest(mObj.recieveMessage());
 		}	
+	}
+	
+	/**
+	 * Method for monitoring routing table in another thread
+	 * @param message
+	 */
+	public void monitorRoutingTable()
+	{
+		new Thread(new Runnable() 
+	    {
+	         public void run() 
+	         {
+	              MonitorTable obj=new MonitorTable();
+	              obj.checkTable();
+	              
+	         }
+	    }).start();
 	}
 	
 	/**
@@ -50,7 +68,7 @@ public class LoadMain
 									break;
 			case "servicerequest":	ServiceRequest sObj=new ServiceRequest();
 									response=sObj.processRequest(message);
-									break;
+									break;						
 		}
 		return response;
 	}
