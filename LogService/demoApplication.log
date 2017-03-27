@@ -1,0 +1,4 @@
+27/Mar/2017 19:39:07,926 ERROR com.log.LogMain:Line:15 - hello
+27/Mar/2017 19:39:07,933 DEBUG com.log.LogMain:Line:16 - Log4j appender configuration is successful !!
+27/Mar/2017 19:39:07,933 FATAL com.log.LogMain:Line:17 - calling nextfile
+27/Mar/2017 19:39:07,933 DEBUG com.log.LogMain:Line:20 - nextfile called10
