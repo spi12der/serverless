@@ -39,7 +39,7 @@ public class UserServlet extends HttpServlet {
 		helper.handleRequest(request, response);
 		
 		response.setContentType("text/html");
-	    PrintWriter out = response.getWriter();
+//	    PrintWriter out = response.getWriter();
 //		response.getWriter().append("Served at: ").append(url);
 		System.out.println("Hello Rohit");
 	}
