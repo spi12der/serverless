@@ -23,6 +23,7 @@ public class UpdateTable
 	 */
 	public void updateRoutingInfo(JSONObject message)
 	{
+		
 		try
 		{
 			File inputFile = new File("routing.xml");

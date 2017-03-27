@@ -28,6 +28,7 @@ public class MonitorTable
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName("server");
+			
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
