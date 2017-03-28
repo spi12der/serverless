@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.message.Message;
+
 public class UserHelper 
 {
 	
@@ -38,10 +40,12 @@ public class UserHelper
 	/**  increment counter which will serve as request id (which is shared variable)
 	 * 
 	 */
-    public synchronized void incrementCount() {
-        count++;
-        if(count==Integer.MAX_VALUE)
+    public synchronized int incrementCount() 
+    {
+    	if(count==Integer.MAX_VALUE)
         	count=0;
+    	count++;
+    	return count;
     }
     
     /** 
@@ -71,18 +75,17 @@ public class UserHelper
 	// format of req www.aw.com/servlet/service_name?name=hello
 	// it should be like this www.aw.com/servlet?name=hello 
 	
-	public void handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res,int requestId) throws IOException 
+	{
 		boolean ok= true;
 		JSONObject container = new JSONObject();
 		JSONArray request_parameters = new JSONArray();
-		container.put("type", "service_name");
+		container.put("type", "service_request");
+		container.put("request_id", requestId);
 		PrintWriter out = res.getWriter();
 		res.setContentType("text/plain");
 
-//		JSONObject parameter = new JSONObject();
 		Enumeration<String> parameterNames = req.getParameterNames();
-		
-		
 		
 		while (parameterNames.hasMoreElements()) {
 			JSONObject parameter = new JSONObject();
@@ -100,10 +103,16 @@ public class UserHelper
 				request_parameters.add(parameter);	
 			}
 		}
-//		request_parameters.add(parameter);
 		container.put("request_parameter", request_parameters);
+		container.put("queue", "loadbalancer");
+		container.put("ip", "10.3.0.233");
 		System.out.println(container.toJSONString());
 		out.close();
+		Message m = new Message();
+		m.sendMessage(container);
+		m.recieveMessage(requestId);
+		String x=m.msg;
+		return null;
 	}
 }
 	

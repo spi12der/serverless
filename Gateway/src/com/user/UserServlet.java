@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
 /**
  * Servlet implementation class UserServlet
  */
@@ -32,16 +34,13 @@ public class UserServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		UserHelper helper=new UserHelper();
-		String url = helper.getFullURL(request);
-		System.out.println(url);
-//		helper.parse(url);
-		helper.incrementCount();
-		helper.handleRequest(request, response);
-		
-		response.setContentType("text/html");
-//	    PrintWriter out = response.getWriter();
-//		response.getWriter().append("Served at: ").append(url);
-		System.out.println("Hello Rohit");
+		//String url = helper.getFullURL(request);
+		//System.out.println(url);
+		int x=helper.incrementCount();
+		JSONObject responseObj=helper.handleRequest(request, response,x);
+		String message=(String)responseObj.get("message");
+		PrintWriter out=response.getWriter();
+		out.print(message);
 	}
 
 	/**
