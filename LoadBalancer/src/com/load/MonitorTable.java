@@ -37,7 +37,7 @@ public class MonitorTable
 					 Element element = (Element) node;
 					 String status=element.getAttribute("status");
 					 double cpu=Double.parseDouble(element.getAttribute("cpu"));
-					 if(status.equalsIgnoreCase("up") && cpu>=75.0)
+					 if(status.equalsIgnoreCase("up") && cpu>=10.0)
 					 {
 						 element.setAttribute("status", "down");
 						 JSONObject response=new JSONObject();

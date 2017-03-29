@@ -1,5 +1,6 @@
 package com.load;
 
+import java.awt.SecondaryLoop;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -10,6 +11,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.message.Message;
 
 public class ServiceRequest 
 {
@@ -22,8 +25,7 @@ public class ServiceRequest
 	public JSONObject processRequest(JSONObject message)
 	{
 		JSONObject response = new JSONObject();
-		String servicename=(String)message.get("servicename");
-		
+		String servicename=(String)message.get("service_name");
 		try
 		{
 			File inputFile = new File("routing.xml");
@@ -32,6 +34,7 @@ public class ServiceRequest
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName("server");
+			boolean flag=false;
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
@@ -49,19 +52,29 @@ public class ServiceRequest
 							 String name=cE.getAttribute("name");
 							 if(servicename.equalsIgnoreCase(name))
 							 {
-								 response.put("ip",element.getAttribute("ip"));
-								 response.put("port",element.getAttribute("port"));
-								 response.put("queue",servicename);
-								 response.put("parameters", message.get("parameters"));
+								 //response.put("ip",element.getAttribute("ip"));
+								 //response.put("port",element.getAttribute("port"));
+								 flag=true;
 							 }		 
 						 }	 
 					 }
 				}
 			}
-			if(!response.containsKey("ip"))
+			if(!flag)
 			{
 				//write code for sending it manager server lifecycle
+				response.put("queue","service_manager");
+				response.put("type","create_service");
 			}
+			else
+			{
+				response.put("queue",servicename);
+				response.put("type","service_request");
+			}
+			response.put("service_name",servicename);
+			response.put("parameters", message.get("parameters"));
+			Message mObj=new Message();
+			mObj.sendMessage(response);
 			System.out.println(response);
 		}
 		catch (Exception e) 

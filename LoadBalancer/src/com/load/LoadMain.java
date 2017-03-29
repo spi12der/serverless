@@ -8,13 +8,8 @@ public class LoadMain
 {
 	public static void main(String[] args) 
 	{
-		LoadMain obj=new LoadMain();
-		obj.monitorRoutingTable();
-		while(true)
-		{
-			Message mObj=new Message();
-			obj.processRequest(mObj.recieveMessage());
-		}	
+		Message mObj=new Message();
+		mObj.recieveMessage();	
 	}
 	
 	/**
@@ -63,10 +58,10 @@ public class LoadMain
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "updatetable":		UpdateTable uObj=new UpdateTable();
+			case "update_table":	UpdateTable uObj=new UpdateTable();
 									uObj.updateRoutingInfo(message);
 									break;
-			case "servicerequest":	ServiceRequest sObj=new ServiceRequest();
+			case "service_request":	ServiceRequest sObj=new ServiceRequest();
 									response=sObj.processRequest(message);
 									break;						
 		}
