@@ -2,18 +2,26 @@ package com.lifecycle;
 
 import org.json.simple.JSONObject;
 
+/*import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;*/
 import com.message.Message;
 
 public class ServiceManagerMain 
 {
-	public static void main(String[] args) 
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws Exception 
 	{
 		ServiceManagerMain obj=new ServiceManagerMain();
-		while(true)
+		/*while(true)
 		{
 			Message mObj=new Message();
 			obj.processRequest(mObj.recieveMessage());
-		}	
+		}*/
+		JSONObject r=new JSONObject();
+		r.put("service_name", "file");
+		obj.deployJar(r);
 	}
 	
 	/**
@@ -45,12 +53,47 @@ public class ServiceManagerMain
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "createservice" :  response=createService(message);
+			case "create_service" :  response=createService(message);
 									break;
-			case "stopservice" :    response=stopService(message);
+			case "stop_service" :    response=stopService(message);
 									break;
 		}
 		return response;
+	}
+	
+	/**
+	 * Method to get the path for repository along with ip
+	 * @param serviceName
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONObject getRepository(String serviceName)
+	{
+		JSONObject repoDetails=new JSONObject();
+		repoDetails.put("password", "ro123hit");
+		repoDetails.put("username", "rohit");
+		repoDetails.put("ip", "localhost");
+		repoDetails.put("path", "/home/rohit/IIIT/Sem2/table2.csv");
+		return repoDetails;
+	}
+	
+	public void deployJar(JSONObject message) throws Exception
+	{
+		/*String serviceName=(String) message.get("service_name");
+		JSONObject repoDetails=getRepository(serviceName);
+		String command="sshpass -p "+((String)repoDetails.get("password"))+" scp "+((String)repoDetails.get("ip"))+"@"+((String)repoDetails.get("username"))+":"+((String)repoDetails.get("path"));
+	    JSch jsch=new JSch();
+	    Session session=jsch.getSession("rohit", "127.0.0.1", 22);
+	    session.connect();
+	    Channel channel=session.openChannel("exec");
+	    ((ChannelExec)channel).setCommand(command);
+	    channel.setInputStream(null);
+	    ((ChannelExec)channel).setErrStream(System.err);
+	    BufferedReader in=new BufferedReader(new InputStreamReader(channel.getInputStream()));
+	    channel.connect();
+	    String msg=null;
+	    while((msg=in.readLine())!=null){
+	      System.out.println(msg);
+	    }*/
 	}
 	
 	public JSONObject createService(JSONObject message)
