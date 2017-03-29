@@ -78,7 +78,8 @@ public class UserHelper
 	{
 		boolean ok= true;
 		JSONObject container = new JSONObject();
-		container.put("request_id", incrementCount());
+		int x=incrementCount();
+		container.put("request_id", x);
 		JSONArray request_parameters = new JSONArray();
 		container.put("type", "service_request");
 		Enumeration<String> parameterNames = req.getParameterNames();
@@ -99,13 +100,22 @@ public class UserHelper
 				request_parameters.add(parameter);	
 			}
 		}
+		String serviceName=(String)container.get("service_name");
+		if(!serviceName.equalsIgnoreCase("logging"))
+		{
+			new Message().logMessage("INFO", "GATEWAY: Request came for "+serviceName+" with request id "+x);
+		}
 		container.put("request_parameter", request_parameters);
 		container.put("ip", getLoadBalIp());
 		container.put("queue", "loadbalancer");
 		Message mObj=new Message();
 		mObj.sendMessage(container);
 		JSONObject message=null;
-		//
+		//code for making the thread sleep and then wake it up for the message will come here
+		if(!serviceName.equalsIgnoreCase("logging"))
+		{
+			new Message().logMessage("INFO", "GATEWAY: Response came for "+serviceName+" with request id "+x);
+		}
 		return message;
 	}
 	

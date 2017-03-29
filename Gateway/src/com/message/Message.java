@@ -81,9 +81,16 @@ public class Message
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
-		callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
+		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
+		JSONObject logObject=new JSONObject();
+		logObject.put("queue", "logging");
+		logObject.put("ip", "localhost");
+		logObject.put("logType", messageType);
+		logObject.put("message", message);
+		sendMessage(logObject);
 	}
 	
 	public String getGatewayAddress()
