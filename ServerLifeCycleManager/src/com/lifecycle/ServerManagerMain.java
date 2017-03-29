@@ -19,12 +19,8 @@ public class ServerManagerMain
 {
 	public static void main(String[] args) 
 	{
-		ServerManagerMain obj=new ServerManagerMain();
-		while(true)
-		{
-			Message mObj=new Message();
-			obj.processRequest(mObj.recieveMessage());
-		}	
+		Message mObj=new Message();
+		mObj.recieveMessage();	
 	}
 	
 	/**
@@ -56,9 +52,11 @@ public class ServerManagerMain
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "serverrequest":	response=getAvailableServer();
+			case "server_request":	response=getAvailableServer();
 									break;
-			case "serverdetails":	response=getServerDetails();
+			case "server_details":	response=getServerDetails();
+									break;
+			case "update_server": 	response=updateServer(message);
 									break;
 		}
 		return response;
@@ -73,6 +71,7 @@ public class ServerManagerMain
 	public JSONObject getAvailableServer()
 	{
 		JSONObject response=new JSONObject();
+		response.put("type", "server_request");
 		try
 		{
 			File inputFile = new File("servers.xml");
@@ -93,19 +92,19 @@ public class ServerManagerMain
 						 InetAddress inet = InetAddress.getByName(element.getAttribute("ip"));
 						 if(inet.isReachable(Integer.parseInt(element.getAttribute("port"))))
 						 {
-							 response.put("type", "serverrequest");
 							 response.put("status","yes");
-							 response.put("ip",element.getAttribute("ip"));
-							 response.put("port",element.getAttribute("port"));
-							 response.put("username",element.getAttribute("username"));
-							 response.put("password",element.getAttribute("password"));
+							 response.put("server_ip",element.getAttribute("ip"));
+							 response.put("server_port",element.getAttribute("port"));
+							 response.put("server_username",element.getAttribute("username"));
+							 response.put("server_password",element.getAttribute("password"));
 							 return response;
 						 }	 
 					 }	 
 				}
 			}
-			response.put("type", "serverdetails");
 			response.put("status","no");
+			response.put("ip", "localhost");
+			response.put("queue", "gateway");
 		}
 		catch (Exception e) 
 		{
@@ -144,13 +143,54 @@ public class ServerManagerMain
 					 serverArray.add(server);	 
 				}
 			}
-			response.put("type", "serverdetails");
+			response.put("type", "server_details");
 			response.put("details", serverArray);
+			response.put("ip", "localhost");
+			response.put("queue", "gateway");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
 		return response;
+	}
+	
+	
+	/**
+	 * Method to update the status of a server
+	 * @param message
+	 * @return
+	 */
+	public JSONObject updateServer(JSONObject message)
+	{
+		String ip=(String)message.get("server_ip");
+		String status=(String)message.get("status");
+		try
+		{
+			File inputFile = new File("servers.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			NodeList nList = doc.getElementsByTagName("servers");
+			for(int i=0;i<nList.getLength();i++)
+			{
+				Node node = nList.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) 
+				{
+					 Element element = (Element) node;
+					 if(ip.equalsIgnoreCase(element.getAttribute("ip")))
+					 {
+						 element.setAttribute("status", status);
+						 break;
+					 }	 
+				}
+			}
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
