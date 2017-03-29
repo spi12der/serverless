@@ -51,6 +51,7 @@ public class Message
 		catch(Exception exception)
 		{
 			exception.printStackTrace();
+			new Message().logMessage("ERROR", "LOAD BALANCER : Error in recieving messages from messaging queue =>"+exception.getLocalizedMessage());
 		}
 	}
 	
@@ -74,12 +75,21 @@ public class Message
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "LOAD BALANCER : Error in sending messages on messaging queue =>"+e.getLocalizedMessage());
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
-		callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
+		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
+		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
+		JSONObject logObject=new JSONObject();
+		logObject.put("queue", "logging");
+		logObject.put("ip", "localhost");
+		logObject.put("logType", messageType);
+		logObject.put("message", message);
+		sendMessage(logObject);
 	}
 	
 	public String getGatewayAddress()
@@ -117,6 +127,7 @@ public class Message
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "LOAD BALANCER : Error in call any service URL =>"+e.getLocalizedMessage());
 		}
 		return message;
 	}

@@ -1,6 +1,5 @@
 package com.load;
 
-import java.awt.SecondaryLoop;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -26,6 +25,11 @@ public class ServiceRequest
 	{
 		JSONObject response = new JSONObject();
 		String servicename=(String)message.get("service_name");
+		String x=(String)message.get("request_id");
+		if(!servicename.equalsIgnoreCase("logging"))
+		{
+			new Message().logMessage("INFO", "LOAD BALANCER: Request came for "+servicename+" with request id "+x);
+		}
 		try
 		{
 			File inputFile = new File("routing.xml");
@@ -65,21 +69,30 @@ public class ServiceRequest
 				//write code for sending it manager server lifecycle
 				response.put("queue","service_manager");
 				response.put("type","create_service");
+				if(!servicename.equalsIgnoreCase("logging"))
+				{
+					new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to service manager for "+servicename+" with request id "+x);
+				}
 			}
 			else
 			{
 				response.put("queue",servicename);
 				response.put("type","service_request");
+				if(!servicename.equalsIgnoreCase("logging"))
+				{
+					new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to "+servicename+" with request id "+x);
+				}
 			}
 			response.put("service_name",servicename);
 			response.put("parameters", message.get("parameters"));
+			response.put("request_id", x);
 			Message mObj=new Message();
 			mObj.sendMessage(response);
-			System.out.println(response);
+			//System.out.println(response);
 		}
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to forward service request =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}

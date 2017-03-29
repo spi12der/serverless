@@ -15,6 +15,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.message.Message;
+
 public class UpdateTable 
 {
 	/**
@@ -50,10 +52,11 @@ public class UpdateTable
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
+	        new Message().logMessage("INFO", "Routing table updated");
 		}
 		catch (Exception e) 
 		{
-			e.printStackTrace();
+			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to update routing table =>"+e.getLocalizedMessage());
 		}
 	}
 }
