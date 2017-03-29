@@ -5,7 +5,6 @@
 package com.user;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServlet;
@@ -42,10 +41,10 @@ public class UserHelper
 	 */
     public synchronized int incrementCount() 
     {
-    	if(count==Integer.MAX_VALUE)
+        count++;
+        if(count==Integer.MAX_VALUE)
         	count=0;
-    	count++;
-    	return count;
+        return count;
     }
     
     /** 
@@ -67,7 +66,7 @@ public class UserHelper
     
     
     
-   /* For Deployment Assembly: Right click on WAR in eclipse-> Buildpath -> Configure Build path -> Deployment Assembly (left Pane) -> Add -> External file system -> Add -> Select your jar -> Add -> Finish.*/
+    /* For Deployment Assembly: Right click on WAR in eclipse-> Buildpath -> Configure Build path -> Deployment Assembly (left Pane) -> Add -> External file system -> Add -> Select your jar -> Add -> Finish.*/
     
 	@SuppressWarnings("unchecked")
 	
@@ -75,19 +74,16 @@ public class UserHelper
 	// format of req www.aw.com/servlet/service_name?name=hello
 	// it should be like this www.aw.com/servlet?name=hello 
 	
-	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res,int requestId) throws IOException 
+	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException 
 	{
 		boolean ok= true;
 		JSONObject container = new JSONObject();
+		container.put("request_id", incrementCount());
 		JSONArray request_parameters = new JSONArray();
 		container.put("type", "service_request");
-		container.put("request_id", requestId);
-		PrintWriter out = res.getWriter();
-		res.setContentType("text/plain");
-
 		Enumeration<String> parameterNames = req.getParameterNames();
-		
-		while (parameterNames.hasMoreElements()) {
+		while (parameterNames.hasMoreElements()) 
+		{
 			JSONObject parameter = new JSONObject();
 			String paramName = parameterNames.nextElement();
 			String[] paramValues = req.getParameterValues(paramName);
@@ -104,15 +100,19 @@ public class UserHelper
 			}
 		}
 		container.put("request_parameter", request_parameters);
+		container.put("ip", getLoadBalIp());
 		container.put("queue", "loadbalancer");
-		container.put("ip", "10.3.0.233");
-		System.out.println(container.toJSONString());
-		out.close();
-		Message m = new Message();
-		m.sendMessage(container);
-		m.recieveMessage(requestId);
-		String x=m.msg;
-		return null;
+		Message mObj=new Message();
+		mObj.sendMessage(container);
+		JSONObject message=null;
+		//
+		return message;
+	}
+	
+	public String getLoadBalIp()
+	{
+		//For now everthing in localhost
+		return "127.0.0.1";
 	}
 }
 	

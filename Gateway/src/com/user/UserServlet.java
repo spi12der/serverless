@@ -30,26 +30,28 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated constructor stub
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 
 		UserHelper helper=new UserHelper();
 		//String url = helper.getFullURL(request);
 		//System.out.println(url);
-		int x=helper.incrementCount();
-		JSONObject responseObj=helper.handleRequest(request, response,x);
-		String message=(String)responseObj.get("message");
-		PrintWriter out=response.getWriter();
-		out.print(message);
+		JSONObject msg=helper.handleRequest(request, response);
+		response.setContentType("text/html");
+		PrintWriter out = response.getWriter();
+		if(msg!=null)
+		{
+			out.print(msg.toJSONString());
+		}
+		out.close();
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		doGet(request, response);
 	}
 }
