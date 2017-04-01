@@ -13,8 +13,8 @@
 	<script> 
 	function load_home() 
 	{
-     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="header.html" ></object>';
-     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="footer.html" ></object>';
+     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="header.jsp" ></object>';
+     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="footer.jsp" ></object>';
 	} 
 	</script> 
 </head>
