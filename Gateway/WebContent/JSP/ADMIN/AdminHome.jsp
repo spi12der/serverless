@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Registration</title>
+	<title>Admin</title>
 	<style type="text/css">
 		html, body { height: 100%; width: 100%; margin: 0;padding:0;}
 		header { height: 15%; width: 100%;margin: 0;padding:0;}
@@ -59,8 +59,8 @@
 	<script> 
 	function load_home() 
 	{
-     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="header.jsp" ></object>';
-     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="footer.jsp" ></object>';
+     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="../header.jsp" ></object>';
+     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="../footer.jsp" ></object>';
 	} 
 	</script> 
 </head>
@@ -81,7 +81,7 @@
 			</ul>
 		</div>
 		<div class="content">
-			<img src="../IMG/iiit.png" width="80%" height="70%" style="margin:8%">
+			<img src="../../IMG/iiit.png" width="80%" height="70%" style="margin:8%">
 		</div>
 	</div>
 	<footer id="footerContent"></footer>
