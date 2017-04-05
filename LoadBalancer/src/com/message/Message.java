@@ -16,8 +16,7 @@ import java.net.URL;
 public class Message 
 {
 	private final static String RECIEVE_QUEUE_NAME = "loadbalancer";
-	private final static String RECEIVEHOSTADDRESS="localhost";
-
+	private final static String RECEIVEHOSTADDRESS="10.2.128.180";
 	public void recieveMessage()
 	{
 		try
@@ -36,6 +35,7 @@ public class Message
 			        JSONParser parser=new JSONParser();
 			        try 
 			        {
+			        	System.out.println("receive " + message);
 						JSONObject json=(JSONObject)parser.parse(message);
 						LoadMain obj=new LoadMain();
 						obj.processRequest(json);
@@ -61,8 +61,9 @@ public class Message
 		final String SENDHOSTADDRESS= (String) response.get("ip");
 		try
 		{
+			System.out.println("ip " + SENDHOSTADDRESS+"  queue  "+SEND_QUEUE_NAME);
 			ConnectionFactory factory = new ConnectionFactory();
-		    factory.setHost(SENDHOSTADDRESS);
+		    factory.setHost("10.2.128.180");
 		    Connection connection = factory.newConnection();
 		    Channel channel = connection.createChannel();
 		    channel.queueDeclare(SEND_QUEUE_NAME, false, false, false, null);
