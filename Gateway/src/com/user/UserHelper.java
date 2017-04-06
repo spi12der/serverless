@@ -6,6 +6,8 @@ package com.user;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,16 @@ import com.message.Message;
 public class UserHelper 
 {
 	
-	public static int count = 0;
+	static int count = 0;
+	
+	public static Map<String,Thread> requestThMap;
+	public static Map<String,JSONObject> responseMap;
+	
+	static
+	{
+		requestThMap=new HashMap<String,Thread>();
+		responseMap=new HashMap<String,JSONObject>();
+	}
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -74,11 +85,11 @@ public class UserHelper
 	// format of req www.aw.com/servlet/service_name?name=hello
 	// it should be like this www.aw.com/servlet?name=hello 
 	
-	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException 
+	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
 	{
 		boolean ok= true;
 		JSONObject container = new JSONObject();
-		int x=incrementCount();
+		String x=new Integer(incrementCount()).toString();
 		container.put("request_id", x);
 		JSONArray request_parameters = new JSONArray();
 		container.put("type", "service_request");
@@ -101,28 +112,29 @@ public class UserHelper
 			}
 		}
 		String serviceName=(String)container.get("service_name");
-		if(!serviceName.equalsIgnoreCase("logging"))
-		{
-			new Message().logMessage("INFO", "GATEWAY: Request came for "+serviceName+" with request id "+x);
-		}
+		new Message().logMessage("INFO", "GATEWAY: Request came for "+serviceName+" with request id "+x);
 		container.put("request_parameter", request_parameters);
-		container.put("ip", getLoadBalIp());
 		container.put("queue", "loadbalancer");
+		requestThMap.put(x, Thread.currentThread());
 		Message mObj=new Message();
 		mObj.sendMessage(container);
-		JSONObject message=null;
-		//code for making the thread sleep and then wake it up for the message will come here
-		if(!serviceName.equalsIgnoreCase("logging"))
-		{
-			new Message().logMessage("INFO", "GATEWAY: Response came for "+serviceName+" with request id "+x);
-		}
+		JSONObject message=getMessage(x);
+		new Message().logMessage("INFO", "GATEWAY: Response came for "+serviceName+" with request id "+x);
 		return message;
 	}
 	
-	public String getLoadBalIp()
+	public JSONObject getMessage(String x) throws InterruptedException
 	{
-		//For now everthing in localhost
-		return "127.0.0.1";
+		Thread.currentThread().wait();
+		JSONObject response=null;
+		synchronized (this) 
+		{
+			response=responseMap.get(x);
+			responseMap.remove(x);
+			requestThMap.remove(x);
+		}
+		return response;
 	}
+	
 }
 	

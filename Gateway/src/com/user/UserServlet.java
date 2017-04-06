@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import com.message.Message;
+
 /**
  * Servlet implementation class UserServlet
  */
@@ -25,18 +27,25 @@ public class UserServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public UserServlet() {
+	public UserServlet() 
+	{
 		super();
-		// TODO Auto-generated constructor stub
+		new Message().recieveMessage();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 
 		UserHelper helper=new UserHelper();
-		//String url = helper.getFullURL(request);
-		//System.out.println(url);
-		JSONObject msg=helper.handleRequest(request, response);
+		JSONObject msg=null;
+		try 
+		{
+			msg = helper.handleRequest(request, response);
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		if(msg!=null)

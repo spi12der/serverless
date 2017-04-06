@@ -15,39 +15,50 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.user.UserHelper;
 
 
 public class Message 
 {
 	private final static String RECIEVE_QUEUE_NAME = "gateway";
-	private final static String RECEIVEHOSTADDRESS="localhost";
+	
+	public String getRabbitIP()
+	{
+		return "localhost";
+	}
 
 	public void recieveMessage()
 	{
 		try
 		{
 			ConnectionFactory factory = new ConnectionFactory();
-		    factory.setHost(RECEIVEHOSTADDRESS);
+		    factory.setHost(getRabbitIP());
 		    Connection connection = factory.newConnection();
 		    Channel channel = connection.createChannel();
 		    channel.queueDeclare(RECIEVE_QUEUE_NAME, false, false, false, null);
-		    //System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 		    Consumer consumer = new DefaultConsumer(channel) {
 		      @Override
 		      public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException 
 		      {
-			        //String message=  new String(body, "UTF-8");
-			        //JSONParser parser=new JSONParser();
-			        /*try 
+			        String message=  new String(body, "UTF-8");
+			        JSONParser parser=new JSONParser();
+			        JSONObject json=null;
+			        try 
 			        {
-						JSONObject json=(JSONObject)parser.parse(message);
-						LoadMain obj=new LoadMain();
-						obj.processRequest(json);
+						json=(JSONObject)parser.parse(message);
 					} 
-			        catch (ParseException e) 
+			        catch(Exception e) 
 			        {
 						e.printStackTrace();
-					}*/
+					}
+			        String req=(String)json.get("request_id");
+			        Thread resTh=null;
+			        synchronized (this) 
+			        {
+			        	UserHelper.responseMap.put(req, json);
+				        resTh=UserHelper.requestThMap.get(req);
+					}
+			        resTh.notify();
 		        }
 		    };
 		    channel.basicConsume(RECIEVE_QUEUE_NAME, false, consumer);
@@ -61,7 +72,7 @@ public class Message
 	public void sendMessage(JSONObject response)
 	{
 		final String SEND_QUEUE_NAME = (String) response.get("queue");
-		final String SENDHOSTADDRESS= (String) response.get("ip");
+		final String SENDHOSTADDRESS= getRabbitIP();
 		try
 		{
 			ConnectionFactory factory = new ConnectionFactory();
@@ -87,15 +98,9 @@ public class Message
 		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
 		JSONObject logObject=new JSONObject();
 		logObject.put("queue", "logging");
-		logObject.put("ip", "localhost");
 		logObject.put("logType", messageType);
 		logObject.put("message", message);
 		sendMessage(logObject);
-	}
-	
-	public String getGatewayAddress()
-	{
-		return "localhost:8114";
 	}
 	
 	@SuppressWarnings("unused")
