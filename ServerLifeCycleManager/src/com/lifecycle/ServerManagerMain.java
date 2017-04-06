@@ -56,7 +56,7 @@ public class ServerManagerMain
 									break;
 			case "server_details":	response=getServerDetails();
 									break;
-			case "update_server": 	response=updateServer(message);
+			case "update_server": 	updateServer(message);
 									break;
 		}
 		return response;
@@ -72,6 +72,7 @@ public class ServerManagerMain
 	{
 		JSONObject response=new JSONObject();
 		response.put("type", "server_request");
+		response.put("queue", "gateway");
 		try
 		{
 			File inputFile = new File("servers.xml");
@@ -103,12 +104,12 @@ public class ServerManagerMain
 				}
 			}
 			response.put("status","no");
-			response.put("ip", "localhost");
-			response.put("queue", "gateway");
+			new Message().logMessage("INFO", "SERVER MANAGER : Idle server details sent to gateway");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in finding idle server =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}
@@ -121,6 +122,7 @@ public class ServerManagerMain
 	public JSONObject getServerDetails()
 	{
 		JSONObject response=new JSONObject();
+		response.put("queue", "gateway");
 		try
 		{
 			File inputFile = new File("servers.xml");
@@ -145,12 +147,12 @@ public class ServerManagerMain
 			}
 			response.put("type", "server_details");
 			response.put("details", serverArray);
-			response.put("ip", "localhost");
-			response.put("queue", "gateway");
+			new Message().logMessage("INFO", "SERVER MANAGER : Server details sent to Gateway");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in fetching server details =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}
@@ -161,7 +163,7 @@ public class ServerManagerMain
 	 * @param message
 	 * @return
 	 */
-	public JSONObject updateServer(JSONObject message)
+	public void updateServer(JSONObject message)
 	{
 		String ip=(String)message.get("server_ip");
 		String status=(String)message.get("status");
@@ -186,11 +188,12 @@ public class ServerManagerMain
 					 }	 
 				}
 			}
+			new Message().logMessage("INFO", "SERVER MANAGER : Server file updated sucessfully");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in updating servers file =>"+e.getLocalizedMessage());
 		}
-		return null;
 	}
 }
