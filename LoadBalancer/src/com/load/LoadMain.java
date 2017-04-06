@@ -58,11 +58,17 @@ public class LoadMain
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "update_table":	UpdateTable uObj=new UpdateTable();
-									uObj.updateRoutingInfo(message);
+			case "update_cpu":		UpdateTable uObj=new UpdateTable();
+									uObj.updateCpu(message);
+									break;
+			case "update_service":	UpdateTable uOb=new UpdateTable();
+									uOb.updateService(message);
 									break;
 			case "service_request":	ServiceRequest sObj=new ServiceRequest();
 									response=sObj.processRequest(message);
+									break;
+			case "update_server":	UpdateTable u=new UpdateTable();
+									u.updateServer(message);
 									break;						
 		}
 		return response;

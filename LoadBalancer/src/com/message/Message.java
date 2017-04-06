@@ -16,13 +16,18 @@ import java.net.URL;
 public class Message 
 {
 	private final static String RECIEVE_QUEUE_NAME = "loadbalancer";
-	private final static String RECEIVEHOSTADDRESS="10.2.128.180";
+	
+	public String getRabbitIP()
+	{
+		return "localhost";
+	}
+	
 	public void recieveMessage()
 	{
 		try
 		{
 			ConnectionFactory factory = new ConnectionFactory();
-		    factory.setHost(RECEIVEHOSTADDRESS);
+		    factory.setHost(getRabbitIP());
 		    Connection connection = factory.newConnection();
 		    Channel channel = connection.createChannel();
 		    channel.queueDeclare(RECIEVE_QUEUE_NAME, false, false, false, null);
@@ -35,7 +40,7 @@ public class Message
 			        JSONParser parser=new JSONParser();
 			        try 
 			        {
-			        	System.out.println("receive " + message);
+			        	//System.out.println("receive " + message);
 						JSONObject json=(JSONObject)parser.parse(message);
 						LoadMain obj=new LoadMain();
 						obj.processRequest(json);
@@ -58,12 +63,11 @@ public class Message
 	public void sendMessage(JSONObject response)
 	{
 		final String SEND_QUEUE_NAME = (String) response.get("queue");
-		final String SENDHOSTADDRESS= (String) response.get("ip");
+		final String SENDHOSTADDRESS= getRabbitIP();
 		try
 		{
-			System.out.println("ip " + SENDHOSTADDRESS+"  queue  "+SEND_QUEUE_NAME);
 			ConnectionFactory factory = new ConnectionFactory();
-		    factory.setHost("10.2.128.180");
+		    factory.setHost(SENDHOSTADDRESS);
 		    Connection connection = factory.newConnection();
 		    Channel channel = connection.createChannel();
 		    channel.queueDeclare(SEND_QUEUE_NAME, false, false, false, null);
@@ -83,19 +87,11 @@ public class Message
 	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
-		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
-		//callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
 		JSONObject logObject=new JSONObject();
 		logObject.put("queue", "logging");
-		logObject.put("ip", "localhost");
 		logObject.put("logType", messageType);
 		logObject.put("message", message);
 		sendMessage(logObject);
-	}
-	
-	public String getGatewayAddress()
-	{
-		return "localhost:8114";
 	}
 	
 	@SuppressWarnings("unused")

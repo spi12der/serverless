@@ -15,6 +15,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.message.Message;
+
 public class MonitorTable 
 {
 	@SuppressWarnings("unchecked")
@@ -28,7 +30,6 @@ public class MonitorTable
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName("server");
-			
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
@@ -44,11 +45,10 @@ public class MonitorTable
 						 response.put("type", "stopservice");
 						 JSONObject server=new JSONObject();
 						 server.put("ip", element.getAttribute("ip"));
-						 server.put("port", element.getAttribute("port"));
 						 response.put("serverdetails",server);
-						 /*response.put("ip", "10.2.23.23");
-						 response.put("port", "8080");
-						 System.out.println(response);*/
+						 response.put("queue", "service_manager");
+						 Message m=new Message();
+						 m.sendMessage(response);
 						 TransformerFactory transformerFactory = TransformerFactory.newInstance();
 					     Transformer transformer = transformerFactory.newTransformer();
 					     DOMSource source = new DOMSource(doc);

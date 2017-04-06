@@ -56,8 +56,6 @@ public class ServiceRequest
 							 String name=cE.getAttribute("name");
 							 if(servicename.equalsIgnoreCase(name))
 							 {
-								 //response.put("ip",element.getAttribute("ip"));
-								 //response.put("port",element.getAttribute("port"));
 								 flag=true;
 							 }		 
 						 }	 
@@ -86,9 +84,6 @@ public class ServiceRequest
 			}
 			response.put("service_name",servicename);
 			response.put("request_id", x);
-			Message mObj=new Message();
-			mObj.sendMessage(response);
-			//System.out.println(response);
 		}
 		catch (Exception e) 
 		{
