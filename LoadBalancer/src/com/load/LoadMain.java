@@ -8,6 +8,7 @@ public class LoadMain
 {
 	public static void main(String[] args) 
 	{
+		new LoadMain().monitorRoutingTable();
 		Message mObj=new Message();
 		mObj.recieveMessage();	
 	}

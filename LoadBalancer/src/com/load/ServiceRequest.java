@@ -64,23 +64,23 @@ public class ServiceRequest
 			}
 			if(!flag)
 			{
-				//write code for sending it manager server lifecycle
+				String IP=new MonitorTable().getFreeServer();
+				if(IP!=null)
+				{
+					JSONObject j=new JSONObject();
+					j.put("ip", IP);
+					response.put("server", j);
+				}	
 				response.put("queue","service_manager");
 				response.put("type","create_service");
-				if(!servicename.equalsIgnoreCase("logging"))
-				{
-					new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to service manager for "+servicename+" with request id "+x);
-				}
+				new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to service manager for "+servicename+" with request id "+x);
 			}
 			else
 			{
 				response.put("queue",servicename);
 				response.put("type","service_request");
 				response.put("parameters",message.get("request_parameter"));
-				if(!servicename.equalsIgnoreCase("logging"))
-				{
-					new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to "+servicename+" with request id "+x);
-				}
+				new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to "+servicename+" with request id "+x);
 			}
 			response.put("service_name",servicename);
 			response.put("request_id", x);
