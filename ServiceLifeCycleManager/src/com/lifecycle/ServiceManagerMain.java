@@ -13,39 +13,48 @@ import com.message.Message;
 
 public class ServiceManagerMain 
 {
+	static Message messageObject;
+	
 	public static void main(String[] args) throws Exception 
 	{
-		Message obj=new Message();
-		obj.recieveMessage();
+		messageObject=new Message(args[0],args[1],args[2],args[3]);
+		messageObject.recieveMessage();
+		new ServiceManagerMain().processRequest();
 	}
 	
 	/**
 	 * Method to process Request in separate thread
 	 * @param message
 	 */
-	public void processRequest(JSONObject message)
+	public void processRequest()
 	{
-	    new Thread(new Runnable() 
+	    while(true)
 	    {
-	         public void run() 
-	         {
-	            JSONObject response;
-				try 
-				{
-					response = parseMessage(message);
-					if(response!=null)
-		            {
-						Message obj=new Message();
-		            	obj.sendMessage(response);
-		            }
-				} 
-				catch (JSchException e) 
-				{
-					e.printStackTrace();
-				}
-	                
-	         }
-	    }).start();  
+	    	JSONObject message=Message.messageQueue.poll();
+	    	if(message!=null)
+	    	{
+	    		new Thread(new Runnable() 
+	    	    {
+	    	         public void run() 
+	    	         {
+	    	            JSONObject response;
+	    				try 
+	    				{
+	    					response = parseMessage(message);
+	    					if(response!=null)
+	    		            {
+	    						messageObject.sendMessage(response);
+	    		            }
+	    				} 
+	    				catch (JSchException e) 
+	    				{
+	    					e.printStackTrace();
+	    				}
+	    	                
+	    	         }
+	    	    }).start();
+	    	}	
+	    }	
 	}
 	
 	/**
@@ -90,11 +99,11 @@ public class ServiceManagerMain
 		if(message.containsKey("server"))
 		{
 			String IP=(String)((JSONObject)message.get("server")).get("IP");
-			serverDetails=new Message().callServiceURL("http://localhost:8080/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
 		}
 		else
 		{
-			serverDetails=new Message().callServiceURL("http://localhost:8080/Serverless/Userservlet?servicename=server_manager&&type=server_request");	
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request");	
 		}
 		JSONObject destination=new JSONObject();
 		destination.put("server_ip", serverDetails.get("server_ip"));
@@ -110,8 +119,7 @@ public class ServiceManagerMain
 		copyJar(source, destination);
 		deployJar(session, "");
 		message.put("queue", message.get("service_name"));
-		Message m=new Message();
-		m.sendMessage(message);
+		messageObject.sendMessage(message);
 	}
 	
 	public void copyJar(JSONObject source,JSONObject destination)
