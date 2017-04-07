@@ -2,6 +2,9 @@ package com.lifecycle;
 
 import org.json.simple.JSONObject;
 
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 /*import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -10,18 +13,10 @@ import com.message.Message;
 
 public class ServiceManagerMain 
 {
-	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception 
 	{
-		ServiceManagerMain obj=new ServiceManagerMain();
-		/*while(true)
-		{
-			Message mObj=new Message();
-			obj.processRequest(mObj.recieveMessage());
-		}*/
-		JSONObject r=new JSONObject();
-		r.put("service_name", "file");
-		obj.deployJar(r);
+		Message obj=new Message();
+		obj.recieveMessage();
 	}
 	
 	/**
@@ -34,29 +29,39 @@ public class ServiceManagerMain
 	    {
 	         public void run() 
 	         {
-	              JSONObject response=parseMessage(message);
-	              if(response!=null)
-	              {
-	            	  Message obj=new Message();
-	            	  obj.sendMessage(response);
-	              }  
+	            JSONObject response;
+				try 
+				{
+					response = parseMessage(message);
+					if(response!=null)
+		            {
+						Message obj=new Message();
+		            	obj.sendMessage(response);
+		            }
+				} 
+				catch (JSchException e) 
+				{
+					e.printStackTrace();
+				}
+	                
 	         }
 	    }).start();  
 	}
 	
 	/**
 	 * Method to parse the message and return response message for a request
+	 * @throws JSchException 
 	 */
-	public JSONObject parseMessage(JSONObject message)
+	public JSONObject parseMessage(JSONObject message) throws JSchException
 	{
 		JSONObject response=null;
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "create_service" :  response=createService(message);
-									break;
-			case "stop_service" :    response=stopService(message);
-									break;
+			case "create_service" :  	createService(message);
+										break;
+			case "stop_service" :    	stopService(message);
+										break;
 		}
 		return response;
 	}
@@ -65,59 +70,65 @@ public class ServiceManagerMain
 	 * Method to get the path for repository along with ip
 	 * @param serviceName
 	 */
-	@SuppressWarnings("unchecked")
 	public JSONObject getRepository(String serviceName)
 	{
-		JSONObject repoDetails=new JSONObject();
+		/*JSONObject repoDetails=new JSONObject();
 		repoDetails.put("password", "ro123hit");
 		repoDetails.put("username", "rohit");
 		repoDetails.put("ip", "localhost");
 		repoDetails.put("path", "/home/rohit/IIIT/Sem2/table2.csv");
-		return repoDetails;
+		return repoDetails;*/
+		//Fetch repo details
+		return null;
 	}
 	
-	public void deployJar(JSONObject message) throws Exception
+	@SuppressWarnings("unchecked")
+	public void createService(JSONObject message) throws JSchException
 	{
-		/*String serviceName=(String) message.get("service_name");
-		JSONObject repoDetails=getRepository(serviceName);
-		String command="sshpass -p "+((String)repoDetails.get("password"))+" scp "+((String)repoDetails.get("ip"))+"@"+((String)repoDetails.get("username"))+":"+((String)repoDetails.get("path"));
-	    JSch jsch=new JSch();
-	    Session session=jsch.getSession("rohit", "127.0.0.1", 22);
-	    session.connect();
-	    Channel channel=session.openChannel("exec");
-	    ((ChannelExec)channel).setCommand(command);
-	    channel.setInputStream(null);
-	    ((ChannelExec)channel).setErrStream(System.err);
-	    BufferedReader in=new BufferedReader(new InputStreamReader(channel.getInputStream()));
-	    channel.connect();
-	    String msg=null;
-	    while((msg=in.readLine())!=null){
-	      System.out.println(msg);
-	    }*/
-	}
-	
-	public JSONObject createService(JSONObject message)
-	{
+		JSONObject serverDetails=null;
+		Session session=null;
 		if(message.containsKey("server"))
 		{
-			//here server IP are already provided by the load balancer
-			//fetch other details
+			String IP=(String)((JSONObject)message.get("server")).get("IP");
+			serverDetails=new Message().callServiceURL("http://localhost:8080/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
 		}
 		else
 		{
-			//fetch the details of available from server lifecycle manager
+			serverDetails=new Message().callServiceURL("http://localhost:8080/Serverless/Userservlet?servicename=server_manager&&type=server_request");	
 		}
-		//copy the jar file to a new server (SCP)
-		//make a new docker instance and execute the jar
-		//send the request message to the service message
-		return null;
+		JSONObject destination=new JSONObject();
+		destination.put("server_ip", serverDetails.get("server_ip"));
+		destination.put("server_port", serverDetails.get("server_port"));
+		destination.put("server_username", serverDetails.get("server_username"));
+		destination.put("server_password", serverDetails.get("server_password"));
+		JSONObject source=getRepository((String)message.get("service_name"));
+		if(!message.containsKey("server"))
+		{
+			JSONObject agent=getRepository("agent");
+			copyJar(agent, destination);
+		}
+		copyJar(source, destination);
+		deployJar(session, "");
+		message.put("queue", message.get("service_name"));
+		Message m=new Message();
+		m.sendMessage(message);
 	}
 	
-	public JSONObject stopService(JSONObject message)
+	public void copyJar(JSONObject source,JSONObject destination)
 	{
-		//check for the service to stop
-		//stop the virtual machines and remove the jars
+		
+	}
+	
+	public void deployJar(Session session,String jarPath) throws JSchException
+	{
+		ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
+		channelExec.setCommand("java -jar "+jarPath);
+		channelExec.setCommand("echo $!");
+	}
+	
+	public void stopService(JSONObject message)
+	{
+		
 		//if no other VM is running on that machine update the servers.xml
-		return null;
 	}
 }

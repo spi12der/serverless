@@ -16,14 +16,18 @@ import java.net.URL;
 public class Message 
 {
 	private final static String RECIEVE_QUEUE_NAME = "service_manager";
-	private final static String RECEIVEHOSTADDRESS="localhost";
-
+	
+	public String getRabbitIP()
+	{
+		return "localhost";
+	}
+	
 	public void recieveMessage()
 	{
 		try
 		{
 			ConnectionFactory factory = new ConnectionFactory();
-		    factory.setHost(RECEIVEHOSTADDRESS);
+		    factory.setHost(getRabbitIP());
 		    Connection connection = factory.newConnection();
 		    Channel channel = connection.createChannel();
 		    channel.queueDeclare(RECIEVE_QUEUE_NAME, false, false, false, null);
@@ -36,6 +40,7 @@ public class Message
 			        JSONParser parser=new JSONParser();
 			        try 
 			        {
+			        	//System.out.println("receive " + message);
 						JSONObject json=(JSONObject)parser.parse(message);
 						ServiceManagerMain obj=new ServiceManagerMain();
 						obj.processRequest(json);
@@ -51,13 +56,14 @@ public class Message
 		catch(Exception exception)
 		{
 			exception.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in recieving messages from messaging queue =>"+exception.getLocalizedMessage());
 		}
 	}
 	
 	public void sendMessage(JSONObject response)
 	{
 		final String SEND_QUEUE_NAME = (String) response.get("queue");
-		final String SENDHOSTADDRESS= (String) response.get("ip");
+		final String SENDHOSTADDRESS= getRabbitIP();
 		try
 		{
 			ConnectionFactory factory = new ConnectionFactory();
@@ -74,17 +80,18 @@ public class Message
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in sending messages on messaging queue =>"+e.getLocalizedMessage());
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
-		callServiceURL("http://"+getGatewayAddress()+"/Serverless/logging?logType="+messageType+"message="+message);
-	}
-	
-	public String getGatewayAddress()
-	{
-		return "localhost:8114";
+		JSONObject logObject=new JSONObject();
+		logObject.put("queue", "logging");
+		logObject.put("logType", messageType);
+		logObject.put("message", message);
+		sendMessage(logObject);
 	}
 	
 	@SuppressWarnings("unused")
@@ -117,6 +124,7 @@ public class Message
 		catch (Exception e) 
 		{
 			e.printStackTrace();
+			new Message().logMessage("ERROR", "SERVER MANAGER : Error in call any service URL =>"+e.getLocalizedMessage());
 		}
 		return message;
 	}
