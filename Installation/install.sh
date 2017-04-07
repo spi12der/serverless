@@ -1,8 +1,11 @@
 # Suryansh Agnihotri
-sudo apt-get install cowsay
-cowsay "Namaste , installation process will begin in a second !"
+# sudo apt-get install cowsay
+# cowsay "Namaste , installation process will begin in a second !"
+echo "Namaste , installation process will begin in a second !"
 /bin/sleep 5
-cowsay "Tom installation Started "
+# cowsay "Tom installation Started "
+echo "Tom installation Started"
+
 
 # starting tomcat
 
@@ -31,9 +34,11 @@ function valid_ip()
     return $stat
 }
 
-cowsay "Enter the number of server available"
+# cowsay "Enter the number of server available"
+echo "Enter the number of server available"
 read available_server
-cowsay "Please enter IP address , username and password "
+# cowsay "Please enter IP address , username and password "
+echo "Please enter IP address , username and password "
 cnt=0
 list_of_server_ip=()
 list_of_server_port=()
