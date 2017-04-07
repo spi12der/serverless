@@ -16,7 +16,6 @@ echo "Tom installation Started"
 
 # . ./install_rabbitmq.sh
 
-
 function valid_ip()
 {
     local  ip=$1
@@ -35,8 +34,13 @@ function valid_ip()
 }
 
 # cowsay "Enter the number of server available"
-echo "Enter the number of server available"
+echo "Enter the number of server available (Minimum 4 )"
 read available_server
+while [ "$available_server" -lt 1 ]
+do
+	echo "please enter minimum 4 servers "
+	read available_server
+done
 # cowsay "Please enter IP address , username and password "
 echo "Please enter IP address , username and password "
 cnt=0
@@ -75,11 +79,72 @@ touch server.xml
 index=0
 echo "<?xml version="1.0"?>">>server.xml
 echo "<root>">>server.xml
-for i in "${!list_of_server_ip[@]}"; do 
-  # printf "%s\t%s\n" "$i" "${foo[$i]}"
-  echo "<server ip="${list_of_server_ip[$i]}" port="${list_of_server_port[$i]}" username="${list_of_username[$i]}" password="${list_of_password[$i]}" status="A" />">>server.xml
+for i in "${!list_of_server_ip[@]}"; do
+  echo "<server ip="${list_of_server_ip[$i]}" port="${list_of_server_port[$i]}" username="${list_of_username[$i]}" password="${list_of_password[$i]}" status="A" ></server>">>server.xml
 done
 echo "</root>">>server.xml
+
+
+
+## 1st Server is Api Gateway
+
+
+
+
+## 2nd Server is Broker
+clear
+sudo apt install sshpass
+path='/home'
+path=$path/${list_of_username[1]}/Desktop
+chmod 777 ./rabbitmq_server.sh
+sshpass -p ${list_of_password[1]} scp -r ./rabbitmq_server.sh ${list_of_username[1]}@${list_of_ip[1]}:$path
+path=$path/rabbitmq_server.sh
+sshpass -p ${list_of_password[1]} ssh -t ${list_of_username[1]}@${list_of_ip[1]} $path
+
+
+
+
+## 3rd contain LoadBalancer ,ManageServer and ManageService LC
+
+## make routing.xml
+
+if [ -e routing.xml ]
+then 
+	rm routing.xml
+fi
+touch routing.xml
+echo "<?xml version="1.0"?>">>routing.xml
+echo "<root>">>routing.xml
+echo  -e "\t<server cpu="50" status="up" ip = ${list_of_server_ip[0]} ></server>" >>routing.xml
+echo -e "\t<server cpu="50" status="up" ip = ${list_of_server_ip[2]} >" >>routing.xml
+echo -e "\t\t<service name="dataservice" containerid="container_dataservice" queue_name=${list_of_server_ip[2]}@dataservice></service>">>routing.xml
+echo -e "\t\t<service name="ManageServerLC" containerid="container_serverlc" queue_name=${list_of_server_ip[2]}@ManageServerLC></service>">>routing.xml
+echo -e "\t\t<service name="ManageServiceLC" containerid="container_servicelc" queue_name=${list_of_server_ip[2]}@ManageServiceLC></service>">>routing.xml
+echo -e "\t\t<service name="fileservice" containerid="container_fileservice" queue_name=${list_of_server_ip[2]}@fileservice></service>">>routing.xml
+echo -e "\t</server>">>routing.xml
+echo "</root>">>routing.xml
+
+
+# Docker work begins
+# sudo docker run --name my2 --rm -v "$PWD":/tmp -w /tmp openjdk:8 java -jar loadbalancer.jar 10.0.123.12 loadbalancer LOAD_BALANCER
+# sudo docker rm -f my1
+
+
+
+
+
+
+
+## 4th and other are for extra service 
+
+
+
+
+
+
+
+
+
 
 # for i in "${list_of_server_ip[@]}"
 # do
