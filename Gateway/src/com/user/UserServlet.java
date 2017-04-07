@@ -15,8 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
-import com.message.Message;
-
 /**
  * Servlet implementation class UserServlet
  */
@@ -30,7 +28,6 @@ public class UserServlet extends HttpServlet {
 	public UserServlet() 
 	{
 		super();
-		new Message().recieveMessage();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 

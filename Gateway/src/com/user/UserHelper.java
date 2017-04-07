@@ -22,6 +22,7 @@ public class UserHelper
 {
 	
 	static int count = 0;
+	static Message messageObject;
 	
 	public static Map<String,Thread> requestThMap;
 	public static Map<String,JSONObject> responseMap;
@@ -30,6 +31,23 @@ public class UserHelper
 	{
 		requestThMap=new HashMap<String,Thread>();
 		responseMap=new HashMap<String,JSONObject>();
+		messageObject=new Message("localhost", "gateway", "GATEWAY", "localhost:8114");
+		processResponse();
+	}
+	
+	public static void processResponse()
+	{
+		while(true)
+		{
+			JSONObject json=Message.messageQueue.poll();
+			if(json!=null)
+			{
+				String req=(String)json.get("request_id");
+		        UserHelper.responseMap.put(req, json);
+		        Thread resTh=UserHelper.requestThMap.get(req);
+		        resTh.notify();
+			}	
+		}
 	}
 	
 	/**
@@ -112,14 +130,13 @@ public class UserHelper
 			}
 		}
 		String serviceName=(String)container.get("service_name");
-		new Message().logMessage("INFO", "GATEWAY: Request came for "+serviceName+" with request id "+x);
+		messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
 		container.put("request_parameter", request_parameters);
 		container.put("queue", "loadbalancer");
 		requestThMap.put(x, Thread.currentThread());
-		Message mObj=new Message();
-		mObj.sendMessage(container);
+		messageObject.sendMessage(container);
 		JSONObject message=getMessage(x);
-		new Message().logMessage("INFO", "GATEWAY: Response came for "+serviceName+" with request id "+x);
+		messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
 		return message;
 	}
 	
