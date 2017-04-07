@@ -26,6 +26,38 @@ public class Message
 		RECIEVE_QUEUE_NAME=queue_name;
 		moduleName=modulename;
 	}
+	
+	
+
+	public static String getRECIEVE_QUEUE_NAME() {
+		return RECIEVE_QUEUE_NAME;
+	}
+
+
+
+	public static void setRECIEVE_QUEUE_NAME(String rECIEVE_QUEUE_NAME) {
+		RECIEVE_QUEUE_NAME = rECIEVE_QUEUE_NAME;
+	}
+
+
+
+	public static String getModuleName() {
+		return moduleName;
+	}
+
+
+
+	public static void setModuleName(String moduleName) {
+		Message.moduleName = moduleName;
+	}
+
+
+
+	public static void setRabbitIP(String rabbitIP) {
+		Message.rabbitIP = rabbitIP;
+	}
+
+
 
 	public String getRabbitIP()
 	{
@@ -63,7 +95,7 @@ public class Message
 		catch(Exception exception)
 		{
 			exception.printStackTrace();
-			logMessage("ERROR", moduleName+" : Error in recieving messages from messaging queue =>"+exception.getLocalizedMessage());
+			logMessage("ERROR", "Error in recieving messages from messaging queue =>"+exception.getLocalizedMessage());
 		}
 	}
 	
@@ -87,13 +119,14 @@ public class Message
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			logMessage("ERROR", moduleName+" : Error in sending messages on messaging queue =>"+e.getLocalizedMessage());
+			logMessage("ERROR", "Error in sending messages on messaging queue =>"+e.getLocalizedMessage());
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
+		message=moduleName+" : "+message;
 		JSONObject logObject=new JSONObject();
 		logObject.put("queue", "logging");
 		logObject.put("logType", messageType);
@@ -131,7 +164,7 @@ public class Message
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			logMessage("ERROR", moduleName+" : Error in call any service URL =>"+e.getLocalizedMessage());
+			logMessage("ERROR", "Error in call any service URL =>"+e.getLocalizedMessage());
 		}
 		return message;
 	}
