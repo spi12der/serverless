@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.message.Message;
 
+
 public class LoadMain 
 {
 	static Message messageObject;
@@ -12,7 +13,7 @@ public class LoadMain
 	{
 		LoadMain obj=new LoadMain();
 		obj.monitorRoutingTable();
-		messageObject=new Message(args[0],args[1],args[2]);
+		messageObject=new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();	
 		obj.processRequest();
 	}
