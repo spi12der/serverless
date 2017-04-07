@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.Queue;
 import com.rabbitmq.client.*;
 
@@ -17,14 +18,17 @@ public class Message
 	private static String RECIEVE_QUEUE_NAME;
 	private static String rabbitIP;
 	private static String moduleName;
+	private static String gateWayAddr;
 	
 	public static Queue<JSONObject> messageQueue;
 	
-	public Message(String ip,String queue_name,String modulename) 
+	public Message(String ip,String queue_name,String modulename,String gatewayAddr) 
 	{
 		rabbitIP=ip;
 		RECIEVE_QUEUE_NAME=queue_name;
 		moduleName=modulename;
+		gateWayAddr=gatewayAddr;
+		messageQueue=new LinkedList<JSONObject>();
 	}
 	
 	
@@ -62,6 +66,17 @@ public class Message
 	public String getRabbitIP()
 	{
 		return rabbitIP;
+	}
+	
+
+	public static String getGateWayAddr() {
+		return gateWayAddr;
+	}
+
+
+
+	public static void setGateWayAddr(String gateWayAddr) {
+		Message.gateWayAddr = gateWayAddr;
 	}
 	
 	public void recieveMessage()
