@@ -21,14 +21,14 @@ public class ServiceRequest
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject processRequest(JSONObject message)
+	public JSONObject processRequest(JSONObject message,Message messageObject)
 	{
 		JSONObject response = new JSONObject();
 		String servicename=(String)message.get("service_name");
 		String x=(String)message.get("request_id");
 		if(!servicename.equalsIgnoreCase("logging"))
 		{
-			new Message().logMessage("INFO", "LOAD BALANCER: Request came for "+servicename+" with request id "+x);
+			messageObject.logMessage("INFO", "Request came for "+servicename+" with request id "+x);
 		}
 		try
 		{
@@ -73,21 +73,21 @@ public class ServiceRequest
 				}	
 				response.put("queue","service_manager");
 				response.put("type","create_service");
-				new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to service manager for "+servicename+" with request id "+x);
+				messageObject.logMessage("INFO", "Request forwarded to service manager for "+servicename+" with request id "+x);
 			}
 			else
 			{
 				response.put("queue",servicename);
 				response.put("type","service_request");
 				response.put("parameters",message.get("request_parameter"));
-				new Message().logMessage("INFO", "LOAD BALANCER: Request forwarded to "+servicename+" with request id "+x);
+				messageObject.logMessage("INFO", "Request forwarded to "+servicename+" with request id "+x);
 			}
 			response.put("service_name",servicename);
 			response.put("request_id", x);
 		}
 		catch (Exception e) 
 		{
-			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to forward service request =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Unable to forward service request =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}

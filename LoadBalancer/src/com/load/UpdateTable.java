@@ -23,7 +23,7 @@ public class UpdateTable
 	 * Method for updating the routing table
 	 * @param message
 	 */
-	public void updateCpu(JSONObject message)
+	public void updateCpu(JSONObject message,Message messageObject)
 	{
 		String IP=(String)message.get("ip");
 		try
@@ -53,11 +53,11 @@ public class UpdateTable
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
-	        new Message().logMessage("INFO", "Routing table updated with for ip "+IP);
+	        messageObject.logMessage("INFO", "Routing table updated with for ip "+IP);
 		}
 		catch (Exception e) 
 		{
-			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to update routing table =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Unable to update routing table =>"+e.getLocalizedMessage());
 		}
 	}
 	
@@ -65,7 +65,7 @@ public class UpdateTable
 	 * Add a new service in the routing table
 	 * @param message
 	 */
-	public void updateService(JSONObject message)
+	public void updateService(JSONObject message,Message messageObject)
 	{
 		String IP=(String)message.get("ip");
 		String name=(String)message.get("service");
@@ -98,11 +98,11 @@ public class UpdateTable
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
-	        new Message().logMessage("INFO", name+" service update in routing table at server "+IP);
+	        messageObject.logMessage("INFO", name+" service update in routing table at server "+IP);
 		}
 		catch (Exception e) 
 		{
-			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to update routing table =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Unable to update routing table =>"+e.getLocalizedMessage());
 		}
 	}
 	
@@ -110,7 +110,7 @@ public class UpdateTable
 	 * Add a new service in the routing table
 	 * @param message
 	 */
-	public void updateServer(JSONObject message)
+	public void updateServer(JSONObject message,Message messageObject)
 	{
 		String IP=(String)message.get("ip");
 		try
@@ -132,11 +132,11 @@ public class UpdateTable
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
-	        new Message().logMessage("INFO", "Routing table updated with server "+IP);
+	        messageObject.logMessage("INFO", "Routing table updated with server "+IP);
 		}
 		catch (Exception e) 
 		{
-			new Message().logMessage("ERROR", "LOAD BALANCER : Unable to update routing table =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Unable to update routing table =>"+e.getLocalizedMessage());
 		}
 	}
 }

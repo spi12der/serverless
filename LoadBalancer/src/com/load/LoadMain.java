@@ -6,11 +6,15 @@ import com.message.Message;
 
 public class LoadMain 
 {
+	static Message messageObject;
+	
 	public static void main(String[] args) 
 	{
-		new LoadMain().monitorRoutingTable();
-		Message mObj=new Message();
-		mObj.recieveMessage();	
+		LoadMain obj=new LoadMain();
+		obj.monitorRoutingTable();
+		messageObject=new Message(args[0],args[1],args[2]);
+		messageObject.recieveMessage();	
+		obj.processRequest();
 	}
 	
 	/**
@@ -24,7 +28,7 @@ public class LoadMain
 	         public void run() 
 	         {
 	              MonitorTable obj=new MonitorTable();
-	              obj.checkTable();
+	              obj.checkTable(messageObject);
 	              
 	         }
 	    }).start();
@@ -34,20 +38,26 @@ public class LoadMain
 	 * Method to process Request in separate thread
 	 * @param message
 	 */
-	public void processRequest(JSONObject message)
+	public void processRequest()
 	{
-	    new Thread(new Runnable() 
-	    {
-	         public void run() 
-	         {
-	              JSONObject response=parseMessage(message);
-	              if(response!=null)
-	              {
-	            	  Message obj=new Message();
-	            	  obj.sendMessage(response);
-	              }  
-	         }
-	    }).start();  
+		while(true)
+		{
+			JSONObject message=Message.messageQueue.poll();
+			if(message!=null)
+			{
+				new Thread(new Runnable() 
+			    {
+			         public void run() 
+			         {
+			              JSONObject response=parseMessage(message);
+			              if(response!=null)
+			              {
+			            	  messageObject.sendMessage(response);
+			              }  
+			         }
+			    }).start();
+			}
+		}	  
 	}
 	
 	/**
@@ -60,16 +70,16 @@ public class LoadMain
 		switch(type)
 		{
 			case "update_cpu":		UpdateTable uObj=new UpdateTable();
-									uObj.updateCpu(message);
+									uObj.updateCpu(message,messageObject);
 									break;
 			case "update_service":	UpdateTable uOb=new UpdateTable();
-									uOb.updateService(message);
+									uOb.updateService(message,messageObject);
 									break;
 			case "service_request":	ServiceRequest sObj=new ServiceRequest();
-									response=sObj.processRequest(message);
+									response=sObj.processRequest(message,messageObject);
 									break;
 			case "update_server":	UpdateTable u=new UpdateTable();
-									u.updateServer(message);
+									u.updateServer(message,messageObject);
 									break;						
 		}
 		return response;

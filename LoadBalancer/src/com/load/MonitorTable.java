@@ -20,7 +20,7 @@ import com.message.Message;
 public class MonitorTable 
 {
 	@SuppressWarnings("unchecked")
-	public void checkTable()
+	public void checkTable(Message messageObject)
 	{
 		while(true)
 		{
@@ -49,8 +49,7 @@ public class MonitorTable
 							 server.put("ip", element.getAttribute("ip"));
 							 response.put("serverdetails",server);
 							 response.put("queue", "service_manager");
-							 Message m=new Message();
-							 m.sendMessage(response);
+							 messageObject.sendMessage(response);
 							 TransformerFactory transformerFactory = TransformerFactory.newInstance();
 						     Transformer transformer = transformerFactory.newTransformer();
 						     DOMSource source = new DOMSource(doc);
