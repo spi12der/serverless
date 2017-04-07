@@ -13,8 +13,11 @@ import com.message.Message;
 
 public class AgentMain 
 {
+	static Message messageObject;
+	
 	public static void main(String[] args) 
 	{
+		messageObject=new Message(args[0], args[1], args[2], args[3]);
 		try 
 		{
 			new AgentMain().updateStatus();
@@ -37,8 +40,7 @@ public class AgentMain
 			JSONObject response=getCPULoad();
 			response.put("type", "update_cpu");
 			response.put("queue", "loadbalancer");
-			Message m=new Message();
-			m.sendMessage(response);
+			messageObject.sendMessage(response);
 			Thread.currentThread().sleep(10000);
 		}
 	}
