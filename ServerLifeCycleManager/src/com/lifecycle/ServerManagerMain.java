@@ -17,30 +17,39 @@ import com.message.Message;
 
 public class ServerManagerMain 
 {
+	static Message messageObject;
+	
 	public static void main(String[] args) 
 	{
-		Message mObj=new Message();
-		mObj.recieveMessage();	
+		messageObject=new Message(args[0],args[1],args[2],args[3]);
+		messageObject.recieveMessage();	
+		new ServerManagerMain().processRequest();
 	}
 	
 	/**
 	 * Method to process Request in separate thread
 	 * @param message
 	 */
-	public void processRequest(JSONObject message)
+	public void processRequest()
 	{
-	    new Thread(new Runnable() 
+	    while(true)
 	    {
-	         public void run() 
-	         {
-	              JSONObject response=parseMessage(message);
-	              if(response!=null)
-	              {
-	            	  Message obj=new Message();
-	            	  obj.sendMessage(response);
-	              }  
-	         }
-	    }).start();  
+	    	JSONObject message=Message.messageQueue.poll();
+	    	if(message!=null)
+	    	{
+	    		new Thread(new Runnable() 
+			    {
+			         public void run() 
+			         {
+			              JSONObject response=parseMessage(message);
+			              if(response!=null)
+			              {
+			            	  messageObject.sendMessage(response);
+			              }  
+			         }
+			    }).start();
+	    	}
+	    }
 	}
 	
 	/**
@@ -52,7 +61,7 @@ public class ServerManagerMain
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "server_request":	response=getAvailableServer();
+			case "server_request":	response=getAvailableServer(message);
 									break;
 			case "server_details":	response=getServerDetails();
 									break;
@@ -68,11 +77,21 @@ public class ServerManagerMain
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject getAvailableServer()
+	public JSONObject getAvailableServer(JSONObject message)
 	{
 		JSONObject response=new JSONObject();
 		response.put("type", "server_request");
 		response.put("queue", "gateway");
+		if(message.containsKey("ip"))
+			response=getServerWithIP(response, (String)message.get("ip"));
+		else
+			response=getServer(response);
+		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getServer(JSONObject response)
+	{
 		try
 		{
 			File inputFile = new File("servers.xml");
@@ -98,18 +117,60 @@ public class ServerManagerMain
 							 response.put("server_port",element.getAttribute("port"));
 							 response.put("server_username",element.getAttribute("username"));
 							 response.put("server_password",element.getAttribute("password"));
+							 messageObject.logMessage("INFO", "Idle server details sent to gateway");
 							 return response;
 						 }	 
 					 }	 
 				}
 			}
 			response.put("status","no");
-			new Message().logMessage("INFO", "SERVER MANAGER : Idle server details sent to gateway");
+			messageObject.logMessage("INFO", "No idle server available");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			new Message().logMessage("ERROR", "SERVER MANAGER : Error in finding idle server =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Error in finding idle server =>"+e.getLocalizedMessage());
+		}
+		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getServerWithIP(JSONObject response,String IP)
+	{
+		try
+		{
+			File inputFile = new File("servers.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			NodeList nList = doc.getElementsByTagName("servers");
+			for(int i=0;i<nList.getLength();i++)
+			{
+				Node node = nList.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) 
+				{
+					 Element element = (Element) node;
+					 String ip=element.getAttribute("ip");
+					 if(ip.equalsIgnoreCase(IP))
+					 {
+						 response.put("status","yes");
+						 response.put("server_ip",element.getAttribute("ip"));
+						 response.put("server_port",element.getAttribute("port"));
+						 response.put("server_username",element.getAttribute("username"));
+						 response.put("server_password",element.getAttribute("password"));
+						 messageObject.logMessage("INFO", "Idle server details sent to gateway");
+						 return response;	 
+					 }	 
+				}
+			}
+			response.put("status","no");
+			messageObject.logMessage("INFO", "No such server available");
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			messageObject.logMessage("ERROR", "Error in finding idle server =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}
@@ -147,12 +208,12 @@ public class ServerManagerMain
 			}
 			response.put("type", "server_details");
 			response.put("details", serverArray);
-			new Message().logMessage("INFO", "SERVER MANAGER : Server details sent to Gateway");
+			messageObject.logMessage("INFO", "Server details sent to Gateway");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			new Message().logMessage("ERROR", "SERVER MANAGER : Error in fetching server details =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Error in fetching server details =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}
@@ -188,12 +249,12 @@ public class ServerManagerMain
 					 }	 
 				}
 			}
-			new Message().logMessage("INFO", "SERVER MANAGER : Server file updated sucessfully");
+			messageObject.logMessage("INFO", "Server file updated sucessfully");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			new Message().logMessage("ERROR", "SERVER MANAGER : Error in updating servers file =>"+e.getLocalizedMessage());
+			messageObject.logMessage("ERROR", "Error in updating servers file =>"+e.getLocalizedMessage());
 		}
 	}
 }
