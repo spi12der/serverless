@@ -5,6 +5,7 @@
 package com.user;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +94,27 @@ public class UserHelper
 		return input.substring(start, end);
     }
     
+    boolean validate(JSONObject container)
+    {
+    	
+    	return true;
+    }
     
+    public JSONObject forward_request(JSONObject container) throws InterruptedException
+	{
+
+		String serviceName=(String)container.get("service_name");
+    	String x= (String)container.get("request_id");
+		messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
+		requestThMap.put(x, Thread.currentThread());
+		messageObject.sendMessage(container);
+		JSONObject message=getMessage(x);
+		messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
+		return message;
+	}
+    
+    
+   
     
     /* For Deployment Assembly: Right click on WAR in eclipse-> Buildpath -> Configure Build path -> Deployment Assembly (left Pane) -> Add -> External file system -> Add -> Select your jar -> Add -> Finish.*/
     
@@ -102,7 +123,6 @@ public class UserHelper
 	// what to do if same parameter name
 	// format of req www.aw.com/servlet/service_name?name=hello
 	// it should be like this www.aw.com/servlet?name=hello 
-	
 	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
 	{
 		boolean ok= true;
@@ -129,15 +149,32 @@ public class UserHelper
 				request_parameters.add(parameter);	
 			}
 		}
-		String serviceName=(String)container.get("service_name");
-		messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
 		container.put("request_parameter", request_parameters);
 		container.put("queue", "loadbalancer");
-		requestThMap.put(x, Thread.currentThread());
-		messageObject.sendMessage(container);
-		JSONObject message=getMessage(x);
-		messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
-		return message;
+		String serviceName=(String)container.get("service_name");
+		boolean forward_this_request = true;
+		if(!serviceName.equals("login"))
+		{
+			// user must have a valid token
+			if(container.containsKey("token_id"))
+			{
+				// validate token 
+				if(!validate(container))
+				{
+					// Not Authorised
+					forward_this_request=false;
+				}
+			}
+		}
+		
+		JSONObject msg=null;
+		if(forward_this_request)
+		{
+			 msg = forward_request(container);
+		}
+		
+		return msg;
+		
 	}
 	
 	public JSONObject getMessage(String x) throws InterruptedException

@@ -49,7 +49,18 @@ public class UserServlet extends HttpServlet {
 		{
 			out.print(msg.toJSONString());
 		}
-		out.close();
+		else
+		{
+		    out.println("<html>");
+		    out.println("<head>");
+		    out.println("<title>Unauthorised User</title>");
+		    out.println("</head>");
+		    out.println("<body>");
+		    out.println("<h1>You are not authorised to access this service !</h1>");
+		    out.println("</body>");
+		    out.println("</html>");
+		}
+//		out.close();
 	}
 
 	/**
