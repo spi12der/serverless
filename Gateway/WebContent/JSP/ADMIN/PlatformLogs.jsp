@@ -69,10 +69,10 @@
 	<div style="height:75.5%;margin:0;padding:0">
 		<div class ="sidebar">
 			<ul id="nav">
-				<li><a class="selected" href="#"> Home</a></li>
+				<li><a href="#"> Home</a></li>
 				<li><a href="#"> Edit Profile</a></li>
 				<li><a href="#"> Manage Server</a></li>
-				<li><a href="#"> Platform Logs</a></li>
+				<li><a class="selected" href="#"> Platform Logs</a></li>
 				<li><a href="#"> Add Admin</a></li>
 				<li><a href="#"> Contact Us</a></li>
 				<li><a href="#"> Logout</a></li>

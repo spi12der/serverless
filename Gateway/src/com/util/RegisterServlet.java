@@ -1,6 +1,7 @@
 package com.util;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,8 +27,20 @@ public class RegisterServlet extends HttpServlet
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		String username=request.getParameter("username");
+		String password=request.getParameter("password");
+		String email=request.getParameter("email");
+		SLUtil slObj=new SLUtil();
+		int res=slObj.registerUser(username, password, email);
+		if(res==0)
+		{
+			response.sendRedirect("/Serverless/JSP/login.jsp?message=User added successfully");
+		}
+		else
+		{
+			response.sendRedirect("/Serverless/JSP/registration.jsp?message=Unable to add user");
+		}
 	}
 
 	/**
@@ -35,11 +48,7 @@ public class RegisterServlet extends HttpServlet
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String username=request.getParameter("username");
-		String password=request.getParameter("password");
-		String email=request.getParameter("email");
-		SLUtil slObj=new SLUtil();
-		slObj.registerUser(username, password, email);
+		doGet(request, response);	
 	}
 
 }

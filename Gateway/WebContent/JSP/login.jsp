@@ -13,8 +13,8 @@
 	<script> 
 	function load_home() 
 	{
-     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="header.jsp" ></object>';
-     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="footer.jsp" ></object>';
+     	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/header.jsp" ></object>';
+     	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/footer.jsp" ></object>';
 	} 
 	</script> 
 </head>
@@ -25,7 +25,8 @@
 		<div style="margin:0 auto;height:80%;width:70%;border:1px solid black;">
 			<center><h2>Sign In</h2>
 			<br>
-			<form name="form1" action="LoginServlet">
+			<p style="color:red">${param.message}</p>
+			<form name="form1" method="post" action="/Serverless/Login">
 				<table>
 					<tr>
 						<td>Username:</td>
@@ -43,7 +44,7 @@
 					<tr>
 						<td colspan="2" style="padding:5% 9% 3% 3%" align="right">
 							<a href="">Forgot Password ?</a>&nbsp;&nbsp;&nbsp;
-							<a href="registration.jsp">Sign Up</a>
+							<a href="/Serverless/JSP/registration.jsp">Sign Up</a>
 						</td>
 					</tr>
 				</table>
