@@ -27,4 +27,12 @@ public class SLUtil
 		}	
 		return response;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject logout(String token)
+	{
+		JSONObject response=new JSONObject();
+		response.put("status", "1");
+		return response;
+	}
 }

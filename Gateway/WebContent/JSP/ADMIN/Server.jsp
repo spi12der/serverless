@@ -57,10 +57,18 @@
 		}	
 	</style>
 	<script> 
+	function makeTable(response)
+	{
+		
+	}
+	
 	function load_home() 
 	{
      	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/header.jsp" ></object>';
      	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/footer.jsp" ></object>';
+     	var response="${param.message}";
+     	if(response!=null)
+     		makeTable(response);		
 	} 
 	</script> 
 </head>
@@ -79,7 +87,7 @@
 			</ul>
 		</div>
 		<div class="content">
-			<img src="../../IMG/iiit.png" width="80%" height="70%" style="margin:8%">
+			
 		</div>
 	</div>
 	<footer id="footerContent"></footer>

@@ -71,7 +71,7 @@
 			<ul id="nav">
 				<li><a class="selected" href="/Serverless/JSP/ADMIN/AdminHome.jsp"> Home</a></li>
 				<li><a href="#"> Edit Profile</a></li>
-				<li><a href="#"> Manage Server</a></li>
+				<li><a href="/Serverless/ServerDetails"> Manage Server</a></li>
 				<li><a href="#"> Platform Logs</a></li>
 				<li><a href="#"> Add Admin</a></li>
 				<li><a href="/Serverless/JSP/ADMIN/Contact.jsp"> Contact Us</a></li>
