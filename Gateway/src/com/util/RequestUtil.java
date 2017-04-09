@@ -1,11 +1,6 @@
-/*
- * Author : Suryansh Agnihotri :)
- */
-
-package com.user;
+package com.util;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import com.message.Message;
 
-public class UserHelper 
+public class RequestUtil 
 {
 	
 	static int count = 0;
@@ -44,8 +39,8 @@ public class UserHelper
 			if(json!=null)
 			{
 				String req=(String)json.get("request_id");
-		        UserHelper.responseMap.put(req, json);
-		        Thread resTh=UserHelper.requestThMap.get(req);
+				RequestUtil.responseMap.put(req, json);
+		        Thread resTh=RequestUtil.requestThMap.get(req);
 		        resTh.notify();
 			}	
 		}
@@ -191,4 +186,4 @@ public class UserHelper
 	}
 	
 }
-	
+

@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import com.util.RequestUtil;
+
 /**
  * Servlet implementation class UserServlet
  */
@@ -33,7 +35,7 @@ public class UserServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
 
-		UserHelper helper=new UserHelper();
+		RequestUtil helper=new RequestUtil();
 		JSONObject msg=null;
 		try 
 		{
