@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+$CATALINA_HOME/bin/shutdown.sh
 #stop tomcat if already running 
 # get the process id running at port 8080
 var=$(sudo netstat -nlp | grep 8080 | tr -s ' ' | cut -d' ' -f 7 | cut -d'/' -f 1)
