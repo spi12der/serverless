@@ -118,18 +118,33 @@ echo "<root>">>routing.xml
 echo  -e "\t<server cpu="50" status="up" ip = ${list_of_server_ip[0]} ></server>" >>routing.xml
 echo -e "\t<server cpu="50" status="up" ip = ${list_of_server_ip[2]} >" >>routing.xml
 echo -e "\t\t<service name="dataservice" containerid="container_dataservice" queue_name=${list_of_server_ip[2]}@dataservice></service>">>routing.xml
-echo -e "\t\t<service name="ManageServerLC" containerid="container_serverlc" queue_name=${list_of_server_ip[2]}@ManageServerLC></service>">>routing.xml
-echo -e "\t\t<service name="ManageServiceLC" containerid="container_servicelc" queue_name=${list_of_server_ip[2]}@ManageServiceLC></service>">>routing.xml
+echo -e "\t\t<service name="manageserverlc" containerid="container_serverlc" queue_name=${list_of_server_ip[2]}@manageserverlc></service>">>routing.xml
+echo -e "\t\t<service name="manageservicelc" containerid="container_servicelc" queue_name=${list_of_server_ip[2]}@manageservicelc></service>">>routing.xml
 echo -e "\t\t<service name="fileservice" containerid="container_fileservice" queue_name=${list_of_server_ip[2]}@fileservice></service>">>routing.xml
 echo -e "\t</server>">>routing.xml
 echo "</root>">>routing.xml
 
 
 # Docker work begins
-# sudo docker run --name my2 --rm -v "$PWD":/tmp -w /tmp openjdk:8 java -jar loadbalancer.jar 10.0.123.12 loadbalancer LOAD_BALANCER
-# sudo docker rm -f my1
 
+#copy jar and routing.xml to corresponding server home directory and run serivices within docker
 
+path='/home'/${list_of_username[2]}
+load_balancer_jar_name="LoadBalancer.jar"
+service_manager_jar_name="ServiceManager.jar"
+server_manager_jar_name="ServerManager.jar"
+chmod 777 ./routing.xml
+chmod 777 ./$load_balancer_jar_name
+chmod 777 ./$service_manager_jar_name
+chmod 777 ./$server_manager_jar_name
+sshpass -p ${list_of_password[0]} scp -r ./routing.xml ${list_of_username[0]}@${list_of_ip[0]}:$path
+sshpass -p ${list_of_password[2]} scp -r ./$load_balancer_jar_name ${list_of_username[2]}@${list_of_ip[2]}:$path
+sshpass -p ${list_of_password[2]} scp -r ./$service_manager_jar_name ${list_of_username[2]}@${list_of_ip[2]}:$path
+sshpass -p ${list_of_password[2]} scp -r ./$server_manager_jar_name ${list_of_username[2]}@${list_of_ip[2]}:$path
+sshpass -p ${list_of_password[2]} ssh -t ${list_of_username[2]}@${list_of_ip[2]} ' sudo service docker start'
+sshpass -p ${list_of_password[2]} ssh -t ${list_of_username[2]}@${list_of_ip[2]} ' sudo docker run --name my2 --rm -v "$PWD":/tmp -w /tmp openjdk:8 java -jar ' $load_balancer_jar_name ' Hi Hello '
+sshpass -p ${list_of_password[2]} ssh -t ${list_of_username[2]}@${list_of_ip[2]} ' sudo docker run --name my2 --rm -v "$PWD":/tmp -w /tmp openjdk:8 java -jar ' $server_manager_jar_name ' Hi Hello '
+sshpass -p ${list_of_password[2]} ssh -t ${list_of_username[2]}@${list_of_ip[2]} ' sudo docker run --name my2 --rm -v "$PWD":/tmp -w /tmp openjdk:8 java -jar ' $service_manager_jar_name ' Hi Hello '
 
 
 
