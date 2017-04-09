@@ -7,8 +7,6 @@
 		header { height: 15%; width: 100%;margin: 0;padding:0;}
 		#headerContent{margin: 0;padding:0;}
 		footer { height: 9%; width: 100%;}
-		table {height:100%;width:60%}
-		td {padding:3% 3% 3% 15%;font-size:120%}
 		input {font-size:90%}
 		.sidebar
 		{
@@ -26,6 +24,7 @@
 			float:left;
 			margin-left:0 auto;
 			margin-top:0 auto;
+			overflow: scroll;
 		}
 		ul#nav
 		{
@@ -54,21 +53,69 @@
 		{
 			background-color:#030303;
 			color:#fff; 
-		}	
+		}
+		table {
+		    border-collapse: collapse;
+		}
+
+		td {
+		    padding: 8px;
+		    text-align: left;
+		    border-bottom: 1px solid #ddd;
+		}
+
+		tr:hover{background-color:#E5E8E8}	
 	</style>
 	<script> 
 	function makeTable(response)
 	{
-		
+		var message=JSON.parse(response);
+		var table = document.createElement('table');
+		table.style.marginTop="5%";
+		table.style.marginLeft="10%";
+		table.width="70%";
+		var tr = document.createElement('tr');   
+		var td1 = document.createElement('td');
+		var td2 = document.createElement('td');
+		var td3 = document.createElement('td');
+		var text1 = document.createTextNode("IP");
+	    var text2 = document.createTextNode("PORT");
+	    var text3 = document.createTextNode("STATUS");
+	    td1.appendChild(text1);
+	    td2.appendChild(text2);
+	    td3.appendChild(text3);
+	    tr.appendChild(td1);
+	    tr.appendChild(td2);
+	    tr.appendChild(td3);
+	    tr.style.color="white";
+	    tr.style.backgroundColor="#444444";
+	    table.appendChild(tr);
+		for (var i = 0; i < message.details.length; i++)
+		{
+		    var tr = document.createElement('tr');   
+		    var td1 = document.createElement('td');
+		    var td2 = document.createElement('td');
+		    var td3 = document.createElement('td');
+		    var text1 = document.createTextNode(message.details[i].ip);
+		    var text2 = document.createTextNode(message.details[i].port);
+		    var text3 = document.createTextNode(message.details[i].status);
+		    td1.appendChild(text1);
+		    td2.appendChild(text2);
+		    td3.appendChild(text3);
+		    tr.appendChild(td1);
+		    tr.appendChild(td2);
+		    tr.appendChild(td3);
+		    table.appendChild(tr);
+		}
+		document.getElementById("displayArea").appendChild(table);
 	}
 	
 	function load_home() 
 	{
      	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/header.jsp" ></object>';
      	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/footer.jsp" ></object>';
-     	var response="${param.message}";
-     	if(response!=null)
-     		makeTable(response);		
+     	var response='${message}';
+     	makeTable(response);		
 	} 
 	</script> 
 </head>
@@ -86,7 +133,7 @@
 				<li><a href="#"> Logout</a></li>
 			</ul>
 		</div>
-		<div class="content">
+		<div class="content" id="displayArea">
 			
 		</div>
 	</div>

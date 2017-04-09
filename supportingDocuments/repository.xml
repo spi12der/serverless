@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<root>
+	<server ip="10.42" username="abc" password="123" ></server>
+	<system>
+		<service name="" path="" module="" ></service>
+	</system>
+	<configuration>
+	</configuration>
+	<developer>
+	</developer>	
+</root>

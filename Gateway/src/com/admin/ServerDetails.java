@@ -31,7 +31,18 @@ public class ServerDetails extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		JSONObject message=getDetails();
-		response.sendRedirect("/Serverless/JSP/ADMIN/Server.jsp?message="+message.toJSONString());
+		request.setAttribute("message", message.toJSONString());
+		request.getRequestDispatcher("JSP/ADMIN/Server.jsp").forward(request, response);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject dummy()
+	{
+		JSONObject s1=new JSONObject();
+		s1.put("ip", "10.0.2.102");
+		s1.put("port", "8080");
+		s1.put("status", "Occupied");
+		return s1;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -39,16 +50,10 @@ public class ServerDetails extends HttpServlet {
 	{
 		JSONObject message=new JSONObject();
 		JSONArray arr=new JSONArray();
-		JSONObject s1=new JSONObject();
-		s1.put("ip", "10.0.2.102");
-		s1.put("port", "8080");
-		s1.put("status", "Occupied");
-		JSONObject s2=new JSONObject();
-		s2.put("ip", "10.0.2.111");
-		s2.put("port", "8011");
-		s2.put("status", "Available");
-		arr.add(s1);
-		arr.add(s2);
+		for(int i=0;i<40;i++)
+		{
+			arr.add(dummy());
+		}	
 		message.put("details", arr);
 		return message;
 	}
