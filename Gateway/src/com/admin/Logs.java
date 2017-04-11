@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 /**
  * Servlet implementation class Logs
  */
@@ -22,13 +25,41 @@ public class Logs extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
+    
+    public JSONObject getObject()
+    {
+    	JSONObject ob=new JSONObject();
+    	ob.put("debug", "INFO");
+    	ob.put("module", "DATA SERVICE");
+    	ob.put("log", "Request came for creating a table");
+    	return ob;
+    }
+    
+    public JSONObject getObject1()
+    {
+    	JSONObject ob=new JSONObject();
+    	ob.put("debug", "INFO");
+    	ob.put("module", "LOAD BALANCER");
+    	ob.put("log", "Request came for creating a table");
+    	return ob;
+    }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		request.setAttribute("message", "{'details':[{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Available'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'},{'port':'8080','ip':'10.0.2.102','status':'Occupied'}]}");
+		JSONObject message=new JSONObject();	
+		JSONArray arr=new JSONArray();
+		for(int i=0;i<40;i++)
+		{
+			if(i%2==0)
+				arr.add(getObject());
+			else
+				arr.add(getObject1());
+		}
+		message.put("details", arr);
+		request.setAttribute("message", message.toJSONString());
 		request.getRequestDispatcher("JSP/ADMIN/PlatformLogs.jsp").forward(request, response);
 	}
 
