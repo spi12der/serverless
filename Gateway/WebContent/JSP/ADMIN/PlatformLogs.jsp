@@ -55,7 +55,7 @@
 		}
 
 		#myInput {
-		  background-image: url('../../IMG/searchicon.png');
+		  background-image: url('/Serverless/IMG/searchicon.png');
 		  background-position: 10px 10px;
 		  background-repeat: no-repeat;
 		  width: 80%;
@@ -115,9 +115,9 @@
 		        var td1 = document.createElement('td');
 		        var td2 = document.createElement('td');
 		        var td3 = document.createElement('td');
-		        var text1 = document.createTextNode(message.details[i].port);
-		        var text2 = document.createTextNode(message.details[i].status);
-		        var text3 = document.createTextNode(message.details[i].ip);
+		        var text1 = document.createTextNode(message.details[i].debug);
+		        var text2 = document.createTextNode(message.details[i].module);
+		        var text3 = document.createTextNode(message.details[i].log);
 		        td1.appendChild(text1);
 		        td2.appendChild(text2);
 		        td3.appendChild(text3);
@@ -133,7 +133,7 @@
 	{
      	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/header.jsp" ></object>';
      	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/footer.jsp" ></object>';
-     	var response="${message}";
+     	var response='${message}';
      	makeTable(response);
 	} 
 	</script> 
@@ -153,7 +153,7 @@
 			</ul>
 		</div>
 		<div class="content" id="displayArea">
-			<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for status.." title="Type in a name">
+			<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for module.." title="Type in a name">
 			<script>
 				function myFunction() {
 				  var input, filter, table, tr, td, i;
