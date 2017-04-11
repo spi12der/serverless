@@ -65,10 +65,14 @@ public class RequestUtil
 		return input.substring(start, end);
     }
     
-    boolean validate(JSONObject container)
+    boolean validate(JSONObject container) throws InterruptedException
     {
     	
-    	return true;
+    	JSONObject res  =  forward_request(container);
+    	if(res.get("status").equals("1"))
+    		return true;
+    	else
+    		return false;
     }
     
     public JSONObject forward_request(JSONObject container) throws InterruptedException
@@ -127,7 +131,7 @@ public class RequestUtil
 		if(!serviceName.equals("login"))
 		{
 			// user must have a valid token
-			if(container.containsKey("token_id"))
+			if(container.containsKey("token"))
 			{
 				// validate token 
 				if(!validate(container))
@@ -142,10 +146,14 @@ public class RequestUtil
 			}
 		}
 		
-		JSONObject msg=null;
+		JSONObject msg=new JSONObject();
 		if(forward_this_request)
 		{
 			 msg = forward_request(container);
+		}
+		else
+		{
+			msg.put("status", "0");
 		}
 		
 		return msg;
