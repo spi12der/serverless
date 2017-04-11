@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import com.util.GlobalThread;
 import com.util.RequestUtil;
 
 /**
@@ -34,7 +35,7 @@ public class UserServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-
+		GlobalThread.getInstance();
 		RequestUtil helper=new RequestUtil();
 		JSONObject msg=null;
 		try 

@@ -2,7 +2,6 @@ package com.util;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
@@ -18,33 +17,10 @@ public class RequestUtil
 {
 	
 	static int count = 0;
-	static Message messageObject;
+	public static Message messageObject;
 	
 	public static Map<String,Thread> requestThMap;
 	public static Map<String,JSONObject> responseMap;
-	
-	static
-	{
-		requestThMap=new HashMap<String,Thread>();
-		responseMap=new HashMap<String,JSONObject>();
-		messageObject=new Message("localhost", "gateway", "GATEWAY", "localhost:8114");
-		processResponse();
-	}
-	
-	public static void processResponse()
-	{
-		while(true)
-		{
-			JSONObject json=Message.messageQueue.poll();
-			if(json!=null)
-			{
-				String req=(String)json.get("request_id");
-				RequestUtil.responseMap.put(req, json);
-		        Thread resTh=RequestUtil.requestThMap.get(req);
-		        resTh.notify();
-			}	
-		}
-	}
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
@@ -159,6 +135,10 @@ public class RequestUtil
 					// Not Authorised
 					forward_this_request=false;
 				}
+			}
+			else
+			{
+				forward_this_request=false;
 			}
 		}
 		

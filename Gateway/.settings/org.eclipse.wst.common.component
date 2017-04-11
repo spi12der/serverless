@@ -2,6 +2,21 @@
     <wb-module deploy-name="Serverless">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="amqp-client-4.1.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/rohit/git/serverless/supportingDocuments/rabbit/amqp-client-4.1.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-api-1.7.21.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/rohit/git/serverless/supportingDocuments/rabbit/slf4j-api-1.7.21.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="json-simple-1.1.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/rohit/git/serverless/supportingDocuments/json-simple-1.1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="slf4j-simple-1.7.22.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/rohit/git/serverless/supportingDocuments/rabbit/slf4j-simple-1.7.22.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="messaging.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//home/rohit/git/serverless/supportingDocuments/messaging.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="Serverless"/>
         <property name="java-output-path" value="/Serverless/build/classes"/>
     </wb-module>
