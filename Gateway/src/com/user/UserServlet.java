@@ -46,24 +46,26 @@ public class UserServlet extends HttpServlet {
 		{
 			e.printStackTrace();
 		}
-		response.setContentType("text/html");
+//		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		if(msg!=null)
-		{
-			out.print(msg.toJSONString());
-		}
-		else
-		{
-		    out.println("<html>");
-		    out.println("<head>");
-		    out.println("<title>Unauthorised User</title>");
-		    out.println("</head>");
-		    out.println("<body>");
-		    out.println("<h1>You are not authorised to access this service !</h1>");
-		    out.println("</body>");
-		    out.println("</html>");
-		}
-//		out.close();
+		out.print(msg.toJSONString());
+//		if(msg!=null)
+//		{
+//			out.print(msg.toJSONString());
+//		}
+//		else
+//		{
+			
+//		    out.println("<html>");
+//		    out.println("<head>");
+//		    out.println("<title>Unauthorised User</title>");
+//		    out.println("</head>");
+//		    out.println("<body>");
+//		    out.println("<h1>You are not authorised to access this service !</h1>");
+//		    out.println("</body>");
+//		    out.println("</html>");
+//		}
+		out.close();
 	}
 
 	/**
