@@ -41,6 +41,7 @@ public class UserServlet extends HttpServlet {
 		try 
 		{
 			msg = helper.handleRequest(request, response);
+			msg = helper.process_request(msg);
 		} 
 		catch (InterruptedException e) 
 		{

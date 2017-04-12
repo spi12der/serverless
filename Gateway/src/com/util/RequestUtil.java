@@ -97,35 +97,10 @@ public class RequestUtil
 	
 	// what to do if same parameter name
 	// format of req www.aw.com/servlet/service_name?name=hello
-	// it should be like this www.aw.com/servlet?name=hello 
-	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
+	// it should be like this www.aw.com/servlet?name=hello
+	
+	public JSONObject process_request(JSONObject container) throws InterruptedException
 	{
-		boolean ok= true;
-		JSONObject container = new JSONObject();
-		String x=new Integer(incrementCount()).toString();
-		container.put("request_id", x);
-		JSONArray request_parameters = new JSONArray();
-		container.put("type", "service_request");
-		Enumeration<String> parameterNames = req.getParameterNames();
-		while (parameterNames.hasMoreElements()) 
-		{
-			JSONObject parameter = new JSONObject();
-			String paramName = parameterNames.nextElement();
-			String[] paramValues = req.getParameterValues(paramName);
-			String paramValue = paramValues[0];
-			if(ok)
-			{
-				container.put("service_name", paramValue);
-				ok=false;
-			}
-			else
-			{
-				parameter.put(paramName, paramValue);
-				request_parameters.add(parameter);	
-			}
-		}
-		container.put("request_parameter", request_parameters);
-		container.put("queue", "loadbalancer");
 		String serviceName=(String)container.get("service_name");
 		boolean forward_this_request = true;
 		if(!serviceName.equals("login"))
@@ -157,6 +132,38 @@ public class RequestUtil
 		}
 		
 		return msg;
+	}
+	
+	
+	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
+	{
+		boolean ok= true;
+		JSONObject container = new JSONObject();
+		String x=new Integer(incrementCount()).toString();
+		container.put("request_id", x);
+		JSONArray request_parameters = new JSONArray();
+		container.put("type", "service_request");
+		Enumeration<String> parameterNames = req.getParameterNames();
+		while (parameterNames.hasMoreElements()) 
+		{
+			JSONObject parameter = new JSONObject();
+			String paramName = parameterNames.nextElement();
+			String[] paramValues = req.getParameterValues(paramName);
+			String paramValue = paramValues[0];
+			if(ok)
+			{
+				container.put("service_name", paramValue);
+				ok=false;
+			}
+			else
+			{
+				parameter.put(paramName, paramValue);
+				request_parameters.add(parameter);	
+			}
+		}
+		container.put("request_parameter", request_parameters);
+		container.put("queue", "loadbalancer");
+		return container;
 		
 	}
 	
