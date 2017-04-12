@@ -6,25 +6,40 @@ import com.Email;
 import com.message.Message;
 
 public class EmailMain {
-	public void processRequest(JSONObject message)
+	static Message messageObject;
+	public static void main(String[] args) 
 	{
-	    new Thread(new Runnable() 
-	    {
-	         public void run() 
-	         {
-	              JSONObject response = parseMessage(message);
-	              if(response!=null)
-	              {
-	            	  Message obj=new Message();
-	            	  obj.sendMessage(response);
-	              }  
-	         }
-	    }).start();  
+		EmailMain obj = new EmailMain();
+		messageObject = new Message(args[0],args[1],args[2],args[3]);
+		messageObject.recieveMessage();
+		obj.processRequest();
+	}
+	public void processRequest()
+	{
+		while(true)
+		{
+			JSONObject message=Message.messageQueue.poll();
+			if(message!=null)
+			{
+				new Thread(new Runnable() 
+			    {
+			         public void run() 
+			         {
+			              JSONObject response=parseMessage(message);
+			              if(response!=null)
+			              {
+			            	  messageObject.sendMessage(response);
+			              }  
+			         }
+			    }).start();
+			}
+		}
 	}
 	@SuppressWarnings("unchecked")
-	public JSONObject parseMessage(JSONObject message)
+	public JSONObject parseMessage(JSONObject m)
 	{
 		JSONObject response=null;
+		JSONObject message = (JSONObject)m.get("parameters");
 		Email e = new Email();
 		String type=(String)message.get("type");
 		switch(type)
@@ -34,8 +49,6 @@ public class EmailMain {
 			
 		}
 		response.put("queue", "gateway");
-		Message m = new Message();
-		response.put("ip", m.getGatewayAddress());
 		return response;
 	}
 }
