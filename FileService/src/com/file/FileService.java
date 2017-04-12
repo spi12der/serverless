@@ -9,17 +9,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 
-public class FileServices 
+public class FileService 
 {
 	private String home = "/home/rama/Desktop/20162029/IAS";
-	static Logger logger = Logger.getLogger(FileServices.class.getName());
+	static Logger logger = Logger.getLogger(FileService.class.getName());
+	@SuppressWarnings("unchecked")
 	public JSONObject createUserDir(JSONObject request)throws Exception
 	{
 		JSONObject response=new JSONObject();
 		try{
-			String directoryName = request.getString("username");
+			
+			String directoryName = (String)request.get("username");
 			if(directoryName == null) {
 				logger.error("error, username is empty");
 			}
@@ -46,12 +48,13 @@ public class FileServices
 		return response;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject createDir(JSONObject request)throws Exception
 	{
 		JSONObject response=new JSONObject();
 		try{
-			String username = request.getString("username");
-			String directoryName = request.getString("directoryName");
+			String username = (String)request.get("username");
+			String directoryName = (String)request.get("directoryName");
 			File f=new File(home + File.separator + username + File.separator + directoryName);
 			if(!f.isDirectory())
 			{
@@ -74,14 +77,15 @@ public class FileServices
 		return response;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject createFile(JSONObject request)throws Exception
 	{
 		JSONObject response = null;
 		try {
 			response=new JSONObject();
-			String username = request.getString("username");
-			String directoryName = request.getString("directoryName");
-			String fileName = request.getString("fileName");
+			String username = (String)request.get("username");
+			String directoryName = (String)request.get("directoryName");
+			String fileName = (String)request.get("fileName");
 			File f=new File(home + File.separator + username + 
 					File.separator + directoryName + File.separator + fileName);
 			if(!f.exists())
@@ -103,14 +107,15 @@ public class FileServices
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject updateFile(JSONObject request)throws Exception
 	{
 		JSONObject response = null;
 		try {
 			response=new JSONObject();
-			String username = request.getString("username");
-			String directoryName = request.getString("directoryName");
-			String fileName = request.getString("fileName");
+			String username = (String)request.get("username");
+			String directoryName = (String)request.get("directoryName");
+			String fileName = (String)request.get("fileName");
 			String file = home + File.separator + username + 
 					File.separator + directoryName + File.separator + fileName;
 			File f=new File(file);
@@ -119,7 +124,7 @@ public class FileServices
 			}
 			f.createNewFile();
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-			bw.write(request.getString("content"));
+			bw.write((String)request.get("content"));
 			bw.close();
 			response.put("status", "1");
 			response.put("message", "File updated successfully");
@@ -135,14 +140,15 @@ public class FileServices
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject deleteFile(JSONObject request)throws Exception
 	{
 		JSONObject response = null;
 		try {
 			response=new JSONObject();
-			String username = request.getString("username");
-			String directoryName = request.getString("directoryName");
-			String fileName = request.getString("fileName");
+			String username = (String)request.get("username");
+			String directoryName = (String)request.get("directoryName");
+			String fileName = (String)request.get("fileName");
 			String file = home + File.separator + username + 
 					File.separator + directoryName + File.separator + fileName;
 			File f=new File(file);
@@ -169,12 +175,13 @@ public class FileServices
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject readFile(JSONObject request)throws Exception
 	{
 		JSONObject response=new JSONObject();
-		String username = request.getString("username");
-		String directoryName = request.getString("directoryName");
-		String fileName = request.getString("fileName");
+		String username = (String)request.get("username");
+		String directoryName = (String)request.get("directoryName");
+		String fileName = (String)request.get("fileName");
 		String file = home + File.separator + username + 
 				File.separator + directoryName + File.separator + fileName;
 		File f=new File(file);
