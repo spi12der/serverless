@@ -7,8 +7,7 @@
 		header { height: 15%; width: 100%;margin: 0;padding:0;}
 		#headerContent{margin: 0;padding:0;}
 		footer { height: 9%; width: 100%;}
-		table {height:100%;width:60%}
-		td {padding:3% 3% 3% 15%;font-size:120%}
+		td {padding:2% 2% 2% 5%;font-size:120%}
 		input {font-size:90%}
 		.sidebar
 		{
@@ -69,9 +68,9 @@
 	<div style="height:75.5%;margin:0;padding:0">
 		<div class ="sidebar">
 			<ul id="nav">
-				<li><a class="selected" href="/Serverless/JSP/USER/UserHome.jsp"> Home</a></li>
+				<li><a href="/Serverless/JSP/USER/UserHome.jsp"> Home</a></li>
 				<li><a href="#"> Tutorial</a></li>
-				<li><a href="/Serverless/JSP/USER/Developer.jsp"> Developer Services</a></li>
+				<li><a class="selected" href="/Serverless/JSP/USER/Developer.jsp"> Developer Services</a></li>
 				<li><a href="/Serverless/Config"> Configuration Services</a></li>
 				<li><a href="/Serverless/ViewService"> View Services</a></li>
 				<li><a href="/Serverless/JSP/USER/Contact.jsp"> Contact Us</a></li>
@@ -79,7 +78,27 @@
 			</ul>
 		</div>
 		<div class="content">
-			<img src="../../IMG/iiit.png" width="80%" height="70%" style="margin:8%">
+			<h2 style="margin:2%">Add New Developer Service</h2>
+			<br><br>
+			<div style="margin:2% auto;padding:2%;width:70%;border:1px solid black;">
+			<center><form name="form1" method="post" action="/Serverless/Developer">
+					<table width="80%">
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" name="name" value="" required></td>	
+						</tr>
+						<tr>
+							<td>Upload Code :</td>
+							<td><input type="file" name="jar"></td>
+						</tr>
+						<tr>
+							<td colspan="2" style="padding:5% 3% 3% 3%"><center>
+								<input type="submit" value="DEPLOY">
+							</center></td>
+						</tr>
+					</table>
+				</form></center>
+				</div>
 		</div>
 	</div>
 	<footer id="footerContent"></footer>

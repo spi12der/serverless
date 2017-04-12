@@ -1,50 +1,33 @@
-package com.admin;
+package com.user;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
-
-import com.util.SLUtil;
-
 /**
- * Servlet implementation class Logs
+ * Servlet implementation class Developer
  */
-@WebServlet("/Logs")
-public class Logs extends HttpServlet {
+@WebServlet("/Developer")
+public class Developer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Logs() {
+    public Developer() {
         super();
         // TODO Auto-generated constructor stub
     }
-    
-    /**
+
+	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		SLUtil obj=new SLUtil();
-		try
-		{
-			JSONObject message=obj.logs();	
-			request.setAttribute("message", message.toJSONString());
-			request.getRequestDispatcher("JSP/ADMIN/PlatformLogs.jsp").forward(request, response);
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp?message=Unable to fetch logs. Retry..");
-		}
-		
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

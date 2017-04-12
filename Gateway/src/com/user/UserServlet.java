@@ -35,7 +35,6 @@ public class UserServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		GlobalThread.getInstance();
 		RequestUtil helper=new RequestUtil();
 		JSONObject msg=null;
 		try 

@@ -22,6 +22,13 @@ public class RequestUtil
 	public static Map<String,Thread> requestThMap;
 	public static Map<String,JSONObject> responseMap;
 	
+	public RequestUtil() 
+	{
+		if(messageObject==null)
+			messageObject=new Message("localhost", "gateway", "GATEWAY", "localhost:8114");
+		GlobalThread.getInstance();
+	}
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -75,16 +82,20 @@ public class RequestUtil
     		return false;
     }
     
-    public JSONObject forward_request(JSONObject container) throws InterruptedException
+    @SuppressWarnings("unchecked")
+	public JSONObject forward_request(JSONObject container) throws InterruptedException
 	{
 
 		String serviceName=(String)container.get("service_name");
     	String x= (String)container.get("request_id");
-		messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
+    	container.put("queue", "loadbalancer");
+		if(!serviceName.equalsIgnoreCase("logging"))
+			messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
 		requestThMap.put(x, Thread.currentThread());
 		messageObject.sendMessage(container);
 		JSONObject message=getMessage(x);
-		messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
+		if(!serviceName.equalsIgnoreCase("logging"))
+			messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
 		return message;
 	}
     
@@ -135,6 +146,7 @@ public class RequestUtil
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
 	{
 		boolean ok= true;

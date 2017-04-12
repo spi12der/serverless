@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
@@ -32,23 +33,33 @@ public class LoginServlet extends HttpServlet {
 		String username=request.getParameter("username");
 		String password=request.getParameter("password");
 		SLUtil slObj=new SLUtil();
-		JSONObject message=slObj.login(username, password);
-		String status=(String)message.get("status");
-		if(status.equalsIgnoreCase("1"))
+		try
 		{
-			String type=(String)message.get("usertype");
-			if(type.equalsIgnoreCase("admin"))
+			JSONObject message=slObj.login(username, password);
+			String status=(String)message.get("status");
+			if(status.equalsIgnoreCase("1"))
 			{
-				response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp");
-			}
+				HttpSession session=request.getSession();  
+			    session.setAttribute("token",(String)message.get("token"));  
+				String type=(String)message.get("usertype");
+				session.setAttribute("usertype",type);
+				if(type.equalsIgnoreCase("admin"))
+				{
+					response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp");
+				}
+				else
+				{
+					response.sendRedirect("/Serverless/JSP/USER/UserHome.jsp");
+				}
+			}	
 			else
 			{
-				response.sendRedirect("/Serverless/JSP/USER/UserHome.jsp");
+				response.sendRedirect("/Serverless/JSP/login.jsp?message=Invalid credentials");
 			}
-		}	
-		else
+		}
+		catch (Exception e) 
 		{
-			response.sendRedirect("/Serverless/JSP/login.jsp?message=Invalid credentials");
+			response.sendRedirect("/Serverless/JSP/login.jsp?message=Unable to login. Retry");
 		}
 	}
 	/**

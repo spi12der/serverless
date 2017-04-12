@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
@@ -28,18 +29,32 @@ public class Logout extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		HttpSession session=request.getSession();
+		String type=(String)session.getAttribute("usertype");
 		SLUtil ob=new SLUtil();
-		JSONObject message=ob.logout("123");
-		String status=(String)message.get("status");
-		if(status.equalsIgnoreCase("1"))
+		try
 		{
-			response.sendRedirect("/Serverless/JSP/login.jsp");
+			JSONObject message=ob.logout((String)session.getAttribute("token"));
+			String status=(String)message.get("status");
+			if(status.equalsIgnoreCase("1"))
+			{
+				response.sendRedirect("/Serverless/JSP/login.jsp");
+			}
+			else
+			{
+				if(type.equalsIgnoreCase("admin"))
+					response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp?message=Unable to logout. Retry..");
+				else
+					response.sendRedirect("/Serverless/JSP/USER/UserHome.jsp?message=Unable to logout. Retry..");
+			}
 		}
-		else
+		catch (Exception e) 
 		{
-			response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp?message=Unable to logout. Retry..");
-		}	
+			if(type.equalsIgnoreCase("admin"))
+				response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp?message=Unable to logout. Retry..");
+			else
+				response.sendRedirect("/Serverless/JSP/USER/UserHome.jsp?message=Unable to logout. Retry..");
+		}
 	}
 
 	/**

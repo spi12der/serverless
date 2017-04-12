@@ -32,13 +32,21 @@ public class RegisterServlet extends HttpServlet
 		String password=request.getParameter("password");
 		String email=request.getParameter("email");
 		SLUtil slObj=new SLUtil();
-		int res=slObj.registerUser(username, password, email);
-		if(res==0)
+		try
 		{
-			response.sendRedirect("/Serverless/JSP/login.jsp?message=User added successfully");
+			int res=slObj.registerUser(username, password, email);
+			if(res==0)
+			{
+				response.sendRedirect("/Serverless/JSP/login.jsp?message=User added successfully");
+			}
+			else
+			{
+				response.sendRedirect("/Serverless/JSP/registration.jsp?message=Unable to add user");
+			}
 		}
-		else
+		catch (Exception e) 
 		{
+			e.printStackTrace();
 			response.sendRedirect("/Serverless/JSP/registration.jsp?message=Unable to add user");
 		}
 	}

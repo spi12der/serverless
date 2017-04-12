@@ -27,9 +27,7 @@ public class ServiceRequest
 		String servicename=(String)message.get("service_name");
 		String x=(String)message.get("request_id");
 		if(!servicename.equalsIgnoreCase("logging"))
-		{
 			messageObject.logMessage("INFO", "Request came for "+servicename+" with request id "+x);
-		}
 		try
 		{
 			File inputFile = new File("routing.xml");
@@ -73,21 +71,24 @@ public class ServiceRequest
 				}	
 				response.put("queue","service_manager");
 				response.put("type","create_service");
-				messageObject.logMessage("INFO", "Request forwarded to service manager for "+servicename+" with request id "+x);
+				if(!servicename.equalsIgnoreCase("logging"))
+					messageObject.logMessage("INFO", "Request forwarded to service manager for "+servicename+" with request id "+x);
 			}
 			else
 			{
 				response.put("queue",servicename);
 				response.put("type","service_request");
 				response.put("parameters",message.get("request_parameter"));
-				messageObject.logMessage("INFO", "Request forwarded to "+servicename+" with request id "+x);
+				if(!servicename.equalsIgnoreCase("logging"))
+					messageObject.logMessage("INFO", "Request forwarded to "+servicename+" with request id "+x);
 			}
 			response.put("service_name",servicename);
 			response.put("request_id", x);
 		}
 		catch (Exception e) 
 		{
-			messageObject.logMessage("ERROR", "Unable to forward service request =>"+e.getLocalizedMessage());
+			if(!servicename.equalsIgnoreCase("logging"))
+				messageObject.logMessage("ERROR", "Unable to forward service request =>"+e.getLocalizedMessage());
 		}
 		return response;
 	}
