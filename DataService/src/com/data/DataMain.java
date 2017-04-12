@@ -1,29 +1,37 @@
 package com.data;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import com.message.Message;
 
 public class DataMain {
+	static Message messageObject;
 	public static void main(String[] args) 
 	{
-		Message mObj=new Message();
-		mObj.recieveMessage();	
+		DataMain obj = new DataMain();
+		messageObject = new Message(args[0],args[1],args[2],args[3]);
+		messageObject.recieveMessage();
+		obj.processRequest();
 	}
-	public void processRequest(JSONObject message)
+	public void processRequest()
 	{
-	    new Thread(new Runnable() 
-	    {
-	         public void run() 
-	         {
-	              JSONObject response = parseMessage(message);
-	              if(response!=null)
-	              {
-	            	  Message obj=new Message();
-	            	  obj.sendMessage(response);
-	              }  
-	         }
-	    }).start();  
+		while(true)
+		{
+			JSONObject message=Message.messageQueue.poll();
+			if(message!=null)
+			{
+				new Thread(new Runnable() 
+			    {
+			         public void run() 
+			         {
+			              JSONObject response=parseMessage(message);
+			              if(response!=null)
+			              {
+			            	  messageObject.sendMessage(response);
+			              }  
+			         }
+			    }).start();
+			}
+		}	  
 	}
 	@SuppressWarnings("unchecked")
 	public JSONObject parseMessage(JSONObject m)
@@ -42,8 +50,7 @@ public class DataMain {
 									break;
 		}
 		response.put("queue", "gateway");
-		Message msg = new Message();
-		response.put("ip", msg.getGatewayAddress());
+		response.put("request_id", (String)m.get("request_id"));
 		return response;
 	}
 }

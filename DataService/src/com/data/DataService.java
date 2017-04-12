@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -119,10 +119,8 @@ public class DataService {
 			   catch (Exception e) {
 					// TODO Auto-generated catch block
 				   	System.out.println("Table Creation Failed");
-				   	//System.out.println(e.getMessage());
 				   	response.put("status", "0");
 				   	response.put("message",e.getMessage());
-					//e.printStackTrace();
 			   }
 			   return response;
 	   }
@@ -257,19 +255,23 @@ public class DataService {
 		   return test;
 	   }
 	   
-	   public static void main(String[] args) throws SQLException, JSONException {
-			DataService fe = new DataService();
-			JSONObject test = fe.createTest();
-			JSONObject response = fe.createTable(test);
-			System.out.println(response.toString());
-			
-			test = fe.insertTest();
-			response = fe.insertRecord(test);
-			System.out.println(response.toString());
-			test = fe.selectTest();
-			response = fe.getRecords(test);
-			System.out.println(response.toString());
-			   System.out.println("Goodbye!");
+	   public static void main(String[] args){
+		   try{
+				DataService fe = new DataService();
+				JSONObject test = fe.createTest();
+				JSONObject response = fe.createTable(test);
+				System.out.println(response.toString());
+				
+				test = fe.insertTest();
+				response = fe.insertRecord(test);
+				System.out.println(response.toString());
+				test = fe.selectTest();
+				response = fe.getRecords(test);
+				System.out.println(response.toString());
+				System.out.println("Goodbye!");
+		   }catch(Exception e){
+			   System.out.println("Exception Occured");
+		   }
 	   }
 	   
 }
