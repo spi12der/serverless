@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
-import com.util.GlobalThread;
 import com.util.RequestUtil;
 
 /**

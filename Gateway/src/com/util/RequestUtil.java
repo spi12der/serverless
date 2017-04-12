@@ -85,8 +85,7 @@ public class RequestUtil
     @SuppressWarnings("unchecked")
 	public JSONObject forward_request(JSONObject container) throws InterruptedException
 	{
-
-		String serviceName=(String)container.get("service_name");
+    	String serviceName=(String)container.get("service_name");
     	String x= (String)container.get("request_id");
     	container.put("queue", "loadbalancer");
 		if(!serviceName.equalsIgnoreCase("logging"))
@@ -133,6 +132,7 @@ public class RequestUtil
 		}
 		
 		JSONObject msg=new JSONObject();
+		forward_this_request=true;
 		if(forward_this_request)
 		{
 			 msg = forward_request(container);
@@ -181,10 +181,10 @@ public class RequestUtil
 	
 	public JSONObject getMessage(String x) throws InterruptedException
 	{
-		Thread.currentThread().wait();
 		JSONObject response=null;
 		synchronized (this) 
 		{
+			this.wait();
 			response=responseMap.get(x);
 			responseMap.remove(x);
 			requestThMap.remove(x);

@@ -61,6 +61,9 @@
 	{
      	document.getElementById("headerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/header.jsp" ></object>';
      	document.getElementById("footerContent").innerHTML='<object style="height:100%;width:100%" type="text/html" data="/Serverless/JSP/footer.jsp" ></object>';
+     	var response="${param.message}";
+     	if(response!='')
+     		alert(response);
 	} 
 	</script> 
 </head>
