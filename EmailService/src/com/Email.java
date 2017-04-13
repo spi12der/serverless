@@ -2,7 +2,6 @@ package com;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-
 import org.json.simple.JSONObject;
 
 public class Email {
@@ -46,11 +45,13 @@ public class Email {
 			     System.out.println("Message sent.");
 			     response.put("status", "1");
 			     response.put("message", "Message Sent Successful");
+			     //messageObject.logMessage("INFO", "Email Service Request served successfully");
 		  }
 		  catch (MessagingException e){ 
 			  System.out.println("Error in sending, cause: " + e);
 			  response.put("status", "0");
 			  response.put("message", "Message Sent Unsuccessful");
+			  //messageObject.logMessage("ERROR", "Email Service Request Failed");
 		  }
 	      return response;
 	}
@@ -61,7 +62,7 @@ public class Email {
 		JSONObject test = new JSONObject();
 		test.put("smtp_host", "students.iiit.ac.in");
 		test.put("username", "gaurav.agarwal@students.iiit.ac.in");
-		test.put("password", "*******");
+		test.put("password", "Mahak1234");
 		test.put("sender", "gaurav.agarwal@students.iiit.ac.in");
 		test.put("receiver", "rohit.dayama@students.iiit.ac.in");
 		test.put("subject", "Love Letter");

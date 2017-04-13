@@ -9,16 +9,15 @@ public class EmailMain {
 	static Message messageObject;
 	public static void main(String[] args) 
 	{
-		EmailMain obj = new EmailMain();
+		//EmailMain obj = new EmailMain();
 		messageObject = new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();
-		obj.processRequest();
+		//obj.processRequest();
 	}
-	public void processRequest()
+	public void processRequest(JSONObject message)
 	{
-		while(true)
-		{
-			JSONObject message=Message.messageQueue.poll();
+		
+			
 			if(message!=null)
 			{
 				new Thread(new Runnable() 
@@ -33,7 +32,6 @@ public class EmailMain {
 			         }
 			    }).start();
 			}
-		}
 	}
 	@SuppressWarnings("unchecked")
 	public JSONObject parseMessage(JSONObject m)
@@ -49,6 +47,9 @@ public class EmailMain {
 			
 		}
 		response.put("queue", "gateway");
+		response.put("request_id", (String)m.get("request_id"));
+		messageObject.logMessage("INFO", "Mail Service has been served with Exit Status :" + response.get("status"));
+		System.out.println(response.toString());
 		return response;
 	}
 }
