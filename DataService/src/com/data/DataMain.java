@@ -48,6 +48,8 @@ public class DataMain {
 									break;
 			case "select":	response = ds.getRecords(message);
 									break;
+			case "sdlogin": response = ds.SDLoginCheck(message);
+									break;
 		}
 		response.put("queue", "gateway");
 		response.put("request_id", (String)m.get("request_id"));

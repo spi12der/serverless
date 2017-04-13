@@ -23,5 +23,9 @@ For Select:
 2. db_name
 3. tbl_name
 4. attributes(comma separated)
-5. conditions(# separated conditions)
+5. conditions(# separated conditions, Ex: a~10#b~20)
 returns status = 1 | 0, message, result(JSONArray of each row)
+
+Database : admin
+Table : sd_details(user_type, username, password)
+Table : username(services)
