@@ -5,17 +5,7 @@ import com.message.Message;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.HashMap;
-/*import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-*/
-
-/*import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;*/
-
-/*import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;*/
-
+import org.json.simple.JSONArray;
 
 public class Security {
 	
@@ -29,29 +19,51 @@ public class Security {
 		JSONObject response=new JSONObject();
 		JSONObject serverDetails=null;
 	    int user_flag = 0;
+	    String user_type = "";
+	    JSONArray DataArray = null;
 	    String username=(String)message.get("username");
 	    String password=(String)message.get("password");
 	    
 	   
 	    //JSONObject getDataService = messageObject.callServiceURL(urlString);
 	    //String IP=(String)((JSONObject)message.get("server")).get("IP");
-	    JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=data_service&&type=select&&username="+username+"&&password="+password);
-	    if((String)getDataService.get("status")== "1")
-	    	user_flag = 1;
-	    else
-	    	user_flag = 0;
+	    JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=dataservice&&type=sdlogin&&username="+username+"&&password="+password);
+	    String status=(String)getDataService.get("status");
+	    if(status.equalsIgnoreCase("1"))
+	    {
+	    	DataArray = (JSONArray)getDataService.get("result");
 	    	
+	    	if(DataArray.size() != 0)
+				user_flag = 1;
+	    	else
+		    	user_flag = 0;
+	    }
+	    
 	    if(user_flag == 1)
 	    {
 	    	response.put("status","1");
 	    	String token  = token_creation(username);
+	    	//System.out.println("t: " + token + "r: " + response);
 	    	response.put("token",token);
+	    	
+	    	for (int i = 0; i < DataArray.size(); i++) 
+	    	{
+	    	    JSONObject jo = (JSONObject)DataArray.get(i);
+	    	    if((String)jo.get("user_type") != null);
+	    	    {
+	    	    	user_type = (String)jo.get("user_type");
+	    	    	break;
+	    	    }
+	    	}
+    
+	    	response.put("usertype", user_type);
 	    	
 	    }
         
 	    else
 	    	response.put("status","0");
 	    
+	    System.out.println("res: " + response);
 	    return response;
 	
 	}
@@ -73,7 +85,8 @@ public class Security {
 		{
 			JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=data_service&&type=select&&token="+Token+"&&service_name="+service_name);; 
 		    
-		    if((String)getDataService.get("status")== "1")
+			String status=(String)getDataService.get("status");
+		    if(status.equalsIgnoreCase("1"))
 		    	response.put("status","1");
 		    
 		    else
