@@ -11,11 +11,10 @@ public class LoadMain
 	
 	public static void main(String[] args) 
 	{
-		LoadMain obj=new LoadMain();
-		obj.monitorRoutingTable();
 		messageObject=new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();	
-		obj.processRequest();
+		LoadMain obj=new LoadMain();
+		//obj.monitorRoutingTable();
 	}
 	
 	/**
@@ -39,25 +38,22 @@ public class LoadMain
 	 * Method to process Request in separate thread
 	 * @param message
 	 */
-	public void processRequest()
+	public void processRequest(JSONObject message)
 	{
-		while(true)
+		if(message!=null)
 		{
-			JSONObject message=Message.messageQueue.poll();
-			if(message!=null)
-			{
-				new Thread(new Runnable() 
-			    {
-			         public void run() 
-			         {
-			              JSONObject response=parseMessage(message);
-			              if(response!=null)
-			              {
-			            	  messageObject.sendMessage(response);
-			              }  
-			         }
-			    }).start();
-			}
+			System.out.println("message recieved");
+			new Thread(new Runnable() 
+		    {
+		         public void run() 
+		         {
+		              JSONObject response=parseMessage(message);
+		              if(response!=null)
+		              {
+		            	  messageObject.sendMessage(response);
+		              }  
+		         }
+		    }).start();
 		}	  
 	}
 	

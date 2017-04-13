@@ -1,7 +1,5 @@
-<?xml version="1.0"?>
-<root>
-	<server cpu="50" status="up" >
-		<service name="dataservice"></service>
-		<service name="file"></service>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>
+	<server cpu="50" status="up">
+		<service name="logging"/>
 	</server>
 </root>
