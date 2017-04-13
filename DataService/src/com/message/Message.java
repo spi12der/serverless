@@ -173,12 +173,11 @@ public class Message
 			h.setDoOutput(true);
 			BufferedReader reader = new BufferedReader( new InputStreamReader(h.getInputStream() ) );
 			String response = reader.readLine();
-			while( null != response )
-			{	
-				//System.out.println( response );
-				response = reader.readLine();
 				
-			}
+			//System.out.println( response );
+			response = reader.readLine();
+				
+			
 			if(response!=null)
 			{
 				JSONParser parser=new JSONParser();
