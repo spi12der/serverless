@@ -62,7 +62,7 @@ public class Email {
 		JSONObject test = new JSONObject();
 		test.put("smtp_host", "students.iiit.ac.in");
 		test.put("username", "gaurav.agarwal@students.iiit.ac.in");
-		test.put("password", "Mahak1234");
+		test.put("password", "--------");
 		test.put("sender", "gaurav.agarwal@students.iiit.ac.in");
 		test.put("receiver", "rohit.dayama@students.iiit.ac.in");
 		test.put("subject", "Love Letter");
