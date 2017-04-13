@@ -32,6 +32,7 @@ public class LogMain
 			JSONObject message=new JSONObject();
 			message.put("queue", "gateway");
 			message.put("status", 1);
+			message.put("request_id", (String)response.get("request_id"));
 			message.put("details", new LogMain().getLogs());
 			messageObject.sendMessage(message);
 		}	
