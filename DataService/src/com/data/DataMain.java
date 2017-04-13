@@ -7,30 +7,25 @@ public class DataMain {
 	static Message messageObject;
 	public static void main(String[] args) 
 	{
-		DataMain obj = new DataMain();
 		messageObject = new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();
-		obj.processRequest();
 	}
-	public void processRequest()
+	
+	public void processRequest(JSONObject message)
 	{
-		while(true)
+		if(message!=null)
 		{
-			JSONObject message=Message.messageQueue.poll();
-			if(message!=null)
-			{
-				new Thread(new Runnable() 
-			    {
-			         public void run() 
-			         {
-			              JSONObject response=parseMessage(message);
-			              if(response!=null)
-			              {
-			            	  messageObject.sendMessage(response);
-			              }  
-			         }
-			    }).start();
-			}
+			new Thread(new Runnable() 
+		    {
+		         public void run() 
+		         {
+		              JSONObject response=parseMessage(message);
+		              if(response!=null)
+		              {
+		            	  messageObject.sendMessage(response);
+		              }  
+		         }
+		    }).start();
 		}	  
 	}
 	@SuppressWarnings("unchecked")
@@ -39,6 +34,7 @@ public class DataMain {
 		JSONObject response=null;
 		JSONObject message = (JSONObject)m.get("parameters");
 		DataService ds = new DataService();
+		//messageObject.logMessage("ERROR", "request ");
 		String type=(String)message.get("type");
 		switch(type)
 		{
@@ -47,6 +43,8 @@ public class DataMain {
 			case "insert":	response = ds.insertRecord(message);
 									break;
 			case "select":	response = ds.getRecords(message);
+									break;
+			case "sdlogin": response = ds.SDLoginCheck(message);
 									break;
 		}
 		response.put("queue", "gateway");

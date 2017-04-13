@@ -6,9 +6,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -94,6 +91,43 @@ public class DataService {
 	   }
 	   
 	   @SuppressWarnings("unchecked")
+	public JSONObject SDLoginCheck(JSONObject message){
+		   JSONObject response = new JSONObject();
+		   String dbname = "admin";
+		   String tblname = "sd_details";
+		   String username = (String)message.get("username");
+		   String password = (String)message.get("password");
+		   Statement stmt = null;
+		   try {
+		   		Connection con = getConnection(dbname);
+		   		stmt = con.createStatement();
+		   		String query = "SELECT user_type FROM " + tblname + " WHERE username=" + username + " AND password=" + password;
+		   		ResultSet rs = stmt.executeQuery(query);
+		   		response.put("result", convert(rs));
+		   		response.put("status", "1");
+		   		response.put("message", "Successfully fetched the Result");
+		   }
+		   catch (Exception e) {
+				// TODO Auto-generated catch block
+			   	System.out.println("Table Fetching Failed");
+			   	System.out.println(e.getMessage());
+			   	response.put("status", "0");
+			   	response.put("message",e.getMessage());
+				//e.printStackTrace();
+		   }
+		   finally {
+			    if (stmt != null) { 
+			    	try {
+			    		stmt.close();
+			    	} catch (SQLException e) {
+					// TODO Auto-generated catch block
+			    		e.printStackTrace();
+			    	} 
+			    }
+		   }
+		   return response;
+	   }
+	   @SuppressWarnings("unchecked")
 	   public JSONObject createTable(JSONObject message){
 			   
 			   JSONObject response = new JSONObject();
@@ -148,7 +182,7 @@ public class DataService {
 				   query += " WHERE ";
 				   String[] conditions = ((String) message.get("conditions")).split("#");
 				   for(int i=0; i<conditions.length; i++)
-					   query += conditions[i] + " AND";
+					   query += conditions[i].replace('~', '=') + " AND";
 				   query = query.substring(0, query.length() -3);
 			   }
 			   
