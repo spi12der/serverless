@@ -24,8 +24,6 @@ public class RequestUtil
 	
 	public RequestUtil() 
 	{
-		if(messageObject==null)
-			messageObject=new Message("localhost", "gateway", "GATEWAY", "localhost:8114");
 		GlobalThread.getInstance();
 	}
 	
@@ -88,11 +86,14 @@ public class RequestUtil
     	String serviceName=(String)container.get("service_name");
     	String x= (String)container.get("request_id");
     	container.put("queue", "loadbalancer");
+    	container.put("type", "service_request");
 		if(!serviceName.equalsIgnoreCase("logging"))
 			messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
 		requestThMap.put(x, Thread.currentThread());
+		System.out.println("reached hereee");
 		messageObject.sendMessage(container);
 		JSONObject message=getMessage(x);
+		System.out.println(message.toJSONString());
 		if(!serviceName.equalsIgnoreCase("logging"))
 			messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
 		return message;
@@ -111,6 +112,8 @@ public class RequestUtil
 	
 	public JSONObject process_request(JSONObject container) throws InterruptedException
 	{
+		String x=new Integer(incrementCount()).toString();
+		container.put("request_id", x);
 		String serviceName=(String)container.get("service_name");
 		boolean forward_this_request = true;
 		if(!serviceName.equals("login"))
@@ -141,7 +144,6 @@ public class RequestUtil
 		{
 			msg.put("status", "0");
 		}
-		
 		return msg;
 	}
 	
@@ -151,8 +153,6 @@ public class RequestUtil
 	{
 		boolean ok= true;
 		JSONObject container = new JSONObject();
-		String x=new Integer(incrementCount()).toString();
-		container.put("request_id", x);
 		JSONArray request_parameters = new JSONArray();
 		container.put("type", "service_request");
 		Enumeration<String> parameterNames = req.getParameterNames();
@@ -175,16 +175,16 @@ public class RequestUtil
 		}
 		container.put("request_parameter", request_parameters);
 		container.put("queue", "loadbalancer");
-		return container;
+		return process_request(container);
 		
 	}
 	
 	public JSONObject getMessage(String x) throws InterruptedException
 	{
 		JSONObject response=null;
-		synchronized (this) 
+		synchronized (Thread.currentThread()) 
 		{
-			this.wait();
+			Thread.currentThread().wait();
 			response=responseMap.get(x);
 			responseMap.remove(x);
 			requestThMap.remove(x);

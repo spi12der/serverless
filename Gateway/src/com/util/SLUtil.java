@@ -46,7 +46,6 @@ public class SLUtil
 		RequestUtil obj=new RequestUtil();
 		JSONObject message=new JSONObject();
 		message.put("service_name", "logging");
-		message.put("request_id", "1");
 		return obj.process_request(message);
 	}
 }

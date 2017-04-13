@@ -12,7 +12,11 @@ public class GlobalThread
 	
 	private GlobalThread()
 	{
-		
+		RequestUtil.requestThMap=new HashMap<String,Thread>();
+ 		RequestUtil.responseMap=new HashMap<String,JSONObject>();
+ 		RequestUtil.messageObject=new Message("10.1.34.155", "gateway", "GATEWAY", "10.1.34.155:8114");
+ 		System.out.println("sfsdfsdf");
+ 		RequestUtil.messageObject.recieveMessage();
 	}
 	
 	public static void getInstance()
@@ -20,31 +24,24 @@ public class GlobalThread
         if(obj == null)
         {
             obj = new GlobalThread();
-            obj.processResponse();
         }
     }
 	
-	private void processResponse()
+	public static void processResponse(JSONObject json)
 	{
-		new Thread(new Runnable() 
-	    {
-	         public void run() 
-	         {
-		        	RequestUtil.requestThMap=new HashMap<String,Thread>();
-		     		RequestUtil.responseMap=new HashMap<String,JSONObject>();
-		     		RequestUtil.messageObject=new Message("localhost", "gateway", "GATEWAY", "localhost:8114");
-		     		while(true)
-		     		{
-		     			JSONObject json=Message.messageQueue.poll();
-		     			if(json!=null)
-		     			{
-		     				String req=(String)json.get("request_id");
-		     				RequestUtil.responseMap.put(req, json);
-		     		        Thread resTh=RequestUtil.requestThMap.get(req);
-		     		        resTh.notify();
-		     			}	
-		     		}  
-	         }	
-	    }).start();
+		if(json!=null)
+		{
+			System.out.println("Message recieved");
+			String req=(String)json.get("request_id");
+			RequestUtil.responseMap.put(req, json);
+	        Thread resTh=RequestUtil.requestThMap.get(req);
+	        if(resTh!=null)
+	        {
+	        	synchronized (resTh) 
+		        {
+		        	resTh.notify();
+		        }
+	        }	
+		}
 	}
 }
