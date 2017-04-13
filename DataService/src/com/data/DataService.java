@@ -81,7 +81,7 @@ public class DataService {
 		   
 		   Connection conn = null;
 		   
-	      //STEP 2: Register JDBC driver
+	       //STEP 2: Register JDBC driver
 		   Class.forName("com.mysql.jdbc.Driver");
 
 	      //STEP 3: Open a connection

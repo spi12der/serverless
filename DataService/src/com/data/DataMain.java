@@ -50,7 +50,7 @@ public class DataMain {
 		}
 		response.put("queue", "gateway");
 		response.put("request_id", (String)m.get("request_id"));
-		messageObject.logMessage("INFO", "Data Service has been served with Exit Status :" + response.get("status"));
+		 messageObject.logMessage("INFO", "Data Service has been served with Exit Status :" + response.get("status"));
 		System.out.println(response.toString());
 		return response;
 	}
