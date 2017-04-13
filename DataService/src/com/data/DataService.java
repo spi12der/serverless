@@ -101,7 +101,7 @@ public class DataService {
 		   try {
 		   		Connection con = getConnection(dbname);
 		   		stmt = con.createStatement();
-		   		String query = "SELECT user_type FROM " + tblname + " WHERE username=" + username + " AND password=" + password;
+		   		String query = "SELECT user_type FROM " + tblname + " WHERE username="+ '"' + username + '"' + " AND password="+ '"' + password +'"';
 		   		ResultSet rs = stmt.executeQuery(query);
 		   		response.put("result", convert(rs));
 		   		response.put("status", "1");

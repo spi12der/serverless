@@ -27,5 +27,5 @@ For Select:
 returns status = 1 | 0, message, result(JSONArray of each row)
 
 Database : admin
-Table : sd_details(user_type, username, password)
+Table : sd_details(user_type, username, password, email_id)
 Table : username(services)

@@ -15,17 +15,18 @@ public class DataMain {
 	{
 		if(message!=null)
 		{
-			new Thread(new Runnable() 
+			/*new Thread(new Runnable() 
 		    {
 		         public void run() 
 		         {
-		              JSONObject response=parseMessage(message);
-		              if(response!=null)
-		              {
-		            	  messageObject.sendMessage(response);
-		              }  
+		                
 		         }
-		    }).start();
+		    }).start();*/
+			JSONObject response=parseMessage(message);
+            if(response!=null)
+            {
+          	  messageObject.sendMessage(response);
+            }
 		}	  
 	}
 	@SuppressWarnings("unchecked")
@@ -49,6 +50,8 @@ public class DataMain {
 		}
 		response.put("queue", "gateway");
 		response.put("request_id", (String)m.get("request_id"));
+		messageObject.logMessage("INFO", "Data Service has been served with Exit Status :" + response.get("status"));
+		System.out.println(response.toString());
 		return response;
 	}
 }
