@@ -59,6 +59,7 @@ public class LoginServlet extends HttpServlet {
 		}
 		catch (Exception e) 
 		{
+			e.printStackTrace();
 			response.sendRedirect("/Serverless/JSP/login.jsp?message=Unable to login. Retry");
 		}
 	}

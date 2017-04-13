@@ -151,12 +151,11 @@ public class RequestUtil
 	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
 	{
 		JSONObject container = new JSONObject();
-		JSONArray request_parameters = new JSONArray();
+		JSONObject request_parameters = new JSONObject();
 		container.put("type", "service_request");
 		Enumeration<String> parameterNames = req.getParameterNames();
 		while (parameterNames.hasMoreElements()) 
 		{
-			JSONObject parameter = new JSONObject();
 			String paramName = parameterNames.nextElement();
 			String[] paramValues = req.getParameterValues(paramName);
 			String paramValue = paramValues[0];
@@ -166,8 +165,7 @@ public class RequestUtil
 			}
 			else
 			{
-				parameter.put(paramName, paramValue);
-				request_parameters.add(parameter);	
+				request_parameters.put(paramName, paramValue);	
 			}
 		}
 		container.put("parameters", request_parameters);
