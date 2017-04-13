@@ -34,8 +34,8 @@ public class RegisterServlet extends HttpServlet
 		SLUtil slObj=new SLUtil();
 		try
 		{
-			int res=slObj.registerUser(username, password, email);
-			if(res==0)
+			String res=slObj.registerUser(username, password, email);
+			if(res.equalsIgnoreCase("1"))
 			{
 				response.sendRedirect("/Serverless/JSP/login.jsp?message=User added successfully");
 			}

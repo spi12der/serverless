@@ -81,7 +81,7 @@
 			<h2 style="margin:2%">Add New Developer Service</h2>
 			<br><br>
 			<div style="margin:2% auto;padding:2%;width:70%;border:1px solid black;">
-			<center><form name="form1" method="post" action="/Serverless/Developer">
+			<center><form name="form1" method="post" enctype="multipart/form-data" action="/Serverless/Developer">
 					<table width="80%">
 						<tr>
 							<td>Name:</td>

@@ -90,10 +90,9 @@ public class RequestUtil
 		if(!serviceName.equalsIgnoreCase("logging"))
 			messageObject.logMessage("INFO", "Request came for "+serviceName+" with request id "+x);
 		requestThMap.put(x, Thread.currentThread());
-		System.out.println("reached hereee");
+		System.out.println("Message sent");
 		messageObject.sendMessage(container);
 		JSONObject message=getMessage(x);
-		System.out.println(message.toJSONString());
 		if(!serviceName.equalsIgnoreCase("logging"))
 			messageObject.logMessage("INFO", "Response came for "+serviceName+" with request id "+x);
 		return message;
@@ -151,7 +150,6 @@ public class RequestUtil
 	@SuppressWarnings("unchecked")
 	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
 	{
-		boolean ok= true;
 		JSONObject container = new JSONObject();
 		JSONArray request_parameters = new JSONArray();
 		container.put("type", "service_request");
@@ -162,10 +160,9 @@ public class RequestUtil
 			String paramName = parameterNames.nextElement();
 			String[] paramValues = req.getParameterValues(paramName);
 			String paramValue = paramValues[0];
-			if(ok)
+			if(paramName.equalsIgnoreCase("service_name"))
 			{
 				container.put("service_name", paramValue);
-				ok=false;
 			}
 			else
 			{
@@ -173,7 +170,7 @@ public class RequestUtil
 				request_parameters.add(parameter);	
 			}
 		}
-		container.put("request_parameter", request_parameters);
+		container.put("parameters", request_parameters);
 		container.put("queue", "loadbalancer");
 		return process_request(container);
 		

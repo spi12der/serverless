@@ -5,27 +5,33 @@ import org.json.simple.JSONObject;
 public class SLUtil 
 {
 	@SuppressWarnings("unchecked")
-	public int registerUser(String username,String password,String email) throws Exception
+	public String registerUser(String username,String password,String email) throws Exception
 	{
+		JSONObject details=new JSONObject();
+		details.put("db_name", "admin");
+		details.put("tbl_name", "sd_details");
+		details.put("type", "insert");
+		details.put("attributes", "username,password,email_id,user_type");
+		details.put("values", username+","+password+","+email+",user");
 		JSONObject message=new JSONObject();
-		message.put("db_name", "ias");
-		message.put("tbl_name", "login");
-		message.put("type", "insert");
 		message.put("service_name", "dataservice");
+		message.put("parameters", details);
 		RequestUtil obj=new RequestUtil();
 		JSONObject response=obj.process_request(message);
-		return (int)response.get("status");	
+		return (String)response.get("status");	
 	}
 	
 	@SuppressWarnings("unchecked")
 	public JSONObject login(String username,String password) throws Exception
 	{
 		RequestUtil obj=new RequestUtil();
+		JSONObject details=new JSONObject();
+		details.put("username", username);
+		details.put("password", password);
+		details.put("type", "sd_login");
 		JSONObject message=new JSONObject();
-		message.put("username", username);
-		message.put("password", password);
-		message.put("type", "sd_login");
 		message.put("service_name", "security");
+		message.put("parameters", details);
 		return obj.process_request(message);
 	}
 	

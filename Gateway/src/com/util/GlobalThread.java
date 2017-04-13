@@ -15,7 +15,6 @@ public class GlobalThread
 		RequestUtil.requestThMap=new HashMap<String,Thread>();
  		RequestUtil.responseMap=new HashMap<String,JSONObject>();
  		RequestUtil.messageObject=new Message("10.1.34.155", "gateway", "GATEWAY", "10.1.34.155:8114");
- 		System.out.println("sfsdfsdf");
  		RequestUtil.messageObject.recieveMessage();
 	}
 	
@@ -37,6 +36,7 @@ public class GlobalThread
 	        Thread resTh=RequestUtil.requestThMap.get(req);
 	        if(resTh!=null)
 	        {
+	        	System.out.println("Notifying thread");
 	        	synchronized (resTh) 
 		        {
 		        	resTh.notify();

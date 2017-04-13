@@ -78,10 +78,10 @@ public class ServiceRequest
 			{
 				response.put("queue",servicename);
 				response.put("type","service_request");
-				response.put("parameters",message.get("request_parameter"));
 				if(!servicename.equalsIgnoreCase("logging"))
 					messageObject.logMessage("INFO", "Request forwarded to "+servicename+" with request id "+x);
 			}
+			response.put("parameters",message.get("parameters"));
 			response.put("service_name",servicename);
 			response.put("request_id", x);
 		}
