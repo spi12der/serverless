@@ -20,28 +20,20 @@ public class LogMain
     	DOMConfigurator.configure("log4j-config.xml");
         messageObject=new Message(args[0],args[1],args[2],args[3]);
         messageObject.recieveMessage();
-        processRequest();
     }
 	
 	@SuppressWarnings("unchecked")
-	public static void processRequest()
+	public static void processRequest(JSONObject response)
 	{
-		while(true)
+		if(response.containsKey("logType"))
+			LogMain.logMessage((String)response.get("logType"), (String)response.get("message"));
+		else
 		{
-			JSONObject response=Message.messageQueue.poll();
-			if(response!=null)
-			{
-				if(response.containsKey("logType"))
-					LogMain.logMessage((String)response.get("logType"), (String)response.get("message"));
-				else
-				{
-					JSONObject message=new JSONObject();
-					message.put("queue", "gateway");
-					message.put("status", 1);
-					message.put("details", new LogMain().getLogs());
-					messageObject.sendMessage(message);
-				}	
-			}	
+			JSONObject message=new JSONObject();
+			message.put("queue", "gateway");
+			message.put("status", 1);
+			message.put("details", new LogMain().getLogs());
+			messageObject.sendMessage(message);
 		}	
 	}
 	
