@@ -47,7 +47,7 @@ static Message messageObject;
 		{
 			JSONObject parameters = (JSONObject) message.get("parameters");
 			String type = (String) parameters.get("type");
-			System.out.print("Hello");
+			
 			switch(type)
 			{
 				case "sd_login":		Security sc1 = new Security();

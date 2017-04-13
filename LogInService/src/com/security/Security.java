@@ -25,7 +25,7 @@ public class Security {
 	@SuppressWarnings({ "unchecked", "unused" })
 	public JSONObject Sd_logIn(JSONObject message, Message messageObject) throws Exception
 	{
-		System.out.print("Hello");
+		
 		JSONObject response=new JSONObject();
 		JSONObject serverDetails=null;
 	    int user_flag = 0;
