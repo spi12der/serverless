@@ -28,6 +28,13 @@ public class Developer extends HttpServlet {
     private int maxMemSize = 4 * 1024;
    	private File file ;
 	
+   	
+   	public void init( )
+   	{
+        // Get the file location where it would be stored.
+        filePath = getServletContext().getInitParameter("file-upload"); 
+     }
+   	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -62,7 +69,7 @@ public class Developer extends HttpServlet {
 	      // maximum size that will be stored in memory
 	      factory.setSizeThreshold(maxMemSize);
 	      // Location to save data that is larger than maxMemSize.
-	      factory.setRepository(new File("/home/rohit/JARS"));
+	      factory.setRepository(new File("/home/rohit/temp"));
 	      // Create a new file upload handler
 	      ServletFileUpload upload = new ServletFileUpload(factory);
 	      // maximum file size to be uploaded.

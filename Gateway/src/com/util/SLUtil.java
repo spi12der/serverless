@@ -39,10 +39,12 @@ public class SLUtil
 	public JSONObject logout(String token) throws Exception
 	{
 		RequestUtil obj=new RequestUtil();
+		JSONObject details=new JSONObject();
+		details.put("token", token);
+		details.put("type", "logout");
 		JSONObject message=new JSONObject();
-		message.put("token", token);
-		message.put("type", "logout");
-		message.put("service_name", "login");
+		message.put("service_name", "security");
+		message.put("parameters", details);
 		return obj.process_request(message);
 	}
 	

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.message.Message;
@@ -70,11 +69,20 @@ public class RequestUtil
 		return input.substring(start, end);
     }
     
-    boolean validate(JSONObject container) throws InterruptedException
+    @SuppressWarnings("unchecked")
+	boolean validate(String token,String serviceName,String requestId) throws InterruptedException
     {
-    	
-    	JSONObject res  =  forward_request(container);
-    	if(res.get("status").equals("1"))
+    	JSONObject details=new JSONObject();
+		details.put("token", token);
+		details.put("service_name", serviceName);
+		details.put("type", "authorization");
+		JSONObject message=new JSONObject();
+		message.put("service_name", "security");
+		message.put("request_id", requestId);
+		message.put("parameters", details);
+    	JSONObject res  =  forward_request(message);
+    	String status=(String)res.get("status");
+    	if(status.equalsIgnoreCase("1"))
     		return true;
     	else
     		return false;
@@ -115,13 +123,14 @@ public class RequestUtil
 		container.put("request_id", x);
 		String serviceName=(String)container.get("service_name");
 		boolean forward_this_request = true;
-		if(!serviceName.equals("login"))
+		if(!serviceName.equals("security"))
 		{
 			// user must have a valid token
 			if(container.containsKey("token"))
 			{
+				String token=(String)container.get("token");
 				// validate token 
-				if(!validate(container))
+				if(!validate(token,serviceName,x))
 				{
 					// Not Authorised
 					forward_this_request=false;
@@ -132,7 +141,6 @@ public class RequestUtil
 				forward_this_request=false;
 			}
 		}
-		
 		JSONObject msg=new JSONObject();
 		forward_this_request=true;
 		if(forward_this_request)
@@ -163,6 +171,10 @@ public class RequestUtil
 			{
 				container.put("service_name", paramValue);
 			}
+			else if(paramName.equalsIgnoreCase("token"))
+			{
+				container.put("token", paramValue);
+			}	
 			else
 			{
 				request_parameters.put(paramName, paramValue);	
