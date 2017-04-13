@@ -146,6 +146,7 @@ public class DataService {
 					   query += attributes[i] + " " + type[i] + " ,";
 				   }
 				   query = query.substring(0, query.length() -1) + ")";
+				   System.out.println(query);
 				   stmt.execute(query);
 				   response.put("status", "1");
 				   response.put("message", "Table successfully created");
@@ -181,11 +182,13 @@ public class DataService {
 			   if(message.containsKey("conditions")){
 				   query += " WHERE ";
 				   String[] conditions = ((String) message.get("conditions")).split("#");
-				   for(int i=0; i<conditions.length; i++)
-					   query += conditions[i].replace('~', '=') + " AND";
+				   for(int i=0; i<conditions.length; i++){
+					   String[] temp = conditions[i].split("~");
+					   query += temp[0] + "=" + '"'+ temp[1]+ '"' + " AND";
+				   }
 				   query = query.substring(0, query.length() -3);
 			   }
-			   
+			   System.out.println(query);
 			   ResultSet rs = stmt.executeQuery(query);
 			   response.put("result", convert(rs));
 			   response.put("status", "1");
@@ -235,7 +238,7 @@ public class DataService {
 				   query += '"' +values[i] + '"' + " ,";
 			   }
 			   query = query.substring(0, query.length() -1) + ")";
-		   
+			   System.out.println(query);
 			   if (stmt.executeUpdate(query) == 1){
 				   response.put("status", "1");
 				   response.put("message", "Successfully inserted record");

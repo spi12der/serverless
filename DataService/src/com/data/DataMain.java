@@ -33,6 +33,7 @@ public class DataMain {
 	public JSONObject parseMessage(JSONObject m)
 	{
 		JSONObject response=null;
+		System.out.println(m.toString());
 		JSONObject message = (JSONObject)m.get("parameters");
 		DataService ds = new DataService();
 		//messageObject.logMessage("ERROR", "request ");
