@@ -74,16 +74,16 @@ public class ServiceManagerMain
 		if(message.containsKey("server"))
 		{
 			String IP=(String)((JSONObject)message.get("server")).get("IP");
-			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=vm_manager&&type=vm_info&&ip="+IP);
 		}
 		else
 		{
-			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request");	
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=vm_manager&&type=start_vm");
 		}
 		JSONObject destination=new JSONObject();
-		destination.put("ip", serverDetails.get("server_ip"));
-		destination.put("username", serverDetails.get("server_username"));
-		destination.put("password", serverDetails.get("server_password"));
+		destination.put("ip", serverDetails.get("ip"));
+		destination.put("username", serverDetails.get("username"));
+		destination.put("password", serverDetails.get("password"));
 		if(!message.containsKey("server"))
 		{
 			obj.deployJar(session, "agent", destination);
@@ -95,8 +95,8 @@ public class ServiceManagerMain
 	
 	public void stopService(JSONObject message)
 	{
-		String IP=(String)((JSONObject)message.get("serverdetails")).get("IP");
-		JSONObject serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
+		//String IP=(String)((JSONObject)message.get("serverdetails")).get("IP");
+		//JSONObject serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
 		//if no other VM is running on that machine update the servers.xml
 	}
 }

@@ -151,7 +151,6 @@ public class Message
 		sendMessage(logObject);
 	}
 	
-	@SuppressWarnings("unused")
 	public JSONObject callServiceURL(String urlString)
 	{
 		JSONObject message=new JSONObject();

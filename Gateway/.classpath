@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/rabbit/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/rabbit/amqp-client-4.1.0.jar"/>
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/commons-fileupload-1.3.jar"/>
+	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/commons-io-2.5.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

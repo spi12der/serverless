@@ -29,6 +29,61 @@ import com.message.Message;
 public class VMUtils 
 {
 	@SuppressWarnings("unchecked")
+	public JSONObject getVMInfo(JSONObject message,Message messageObject)
+	{
+		JSONObject vmDetails=new JSONObject();
+		vmDetails.put("queue", "gateway");
+		vmDetails.put("request_id", message.get("request_id"));
+		String IP=(String)((JSONObject)message.get("parameters")).get("ip");
+		try
+		{
+			File inputFile = new File("VMs.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			NodeList nList = doc.getElementsByTagName("machine");
+			boolean flag=false;
+			for(int i=0;i<nList.getLength();i++)
+			{
+				Node node = nList.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) 
+				{
+					 Element element = (Element) node;
+					 NodeList childList=element.getElementsByTagName("vm");
+					 for(int j=0;j<childList.getLength();j++)
+					 {
+						 Node childNode = childList.item(j);
+						 if (childNode.getNodeType() == Node.ELEMENT_NODE) 
+						 {
+							 Element childElement=(Element)childNode;
+							 String ip=(String)childElement.getAttribute("ip");
+							 if(ip.equalsIgnoreCase(IP))
+							 {
+								 vmDetails.put("ip", IP);
+								 vmDetails.put("username", (String)childElement.getAttribute("username"));
+								 vmDetails.put("password", (String)childElement.getAttribute("password"));
+								 flag=true;
+								 break;
+							 }	 
+						 }
+					 }	 
+				}
+				if(flag)
+					break;
+			}
+			messageObject.logMessage("INFO", "VM details fetched sucessfully");
+			vmDetails.put("status", "1");
+		}
+		catch (Exception e) 
+		{
+			vmDetails.put("status", "0");
+			e.printStackTrace();
+			messageObject.logMessage("ERROR", "Unable to fetch VM details");
+		}
+		return vmDetails;
+	}	
+	@SuppressWarnings("unchecked")
 	public JSONObject getVMDetails(JSONObject message,Message messageObject)
 	{
 		JSONObject vmDetails=new JSONObject();
@@ -129,6 +184,9 @@ public class VMUtils
 			}	
 			String IP=sponVM(serverDetails,vmNo);
 			addTag(serverDetails, machine, doc, vmNo,inputFile,IP);
+			vmDetails.put("ip", IP);
+			vmDetails.put("username", "vagrant");
+			vmDetails.put("password", "vagrant");
 			vmDetails.put("status", "1");
 			messageObject.logMessage("INFO", "New VM started");
 		}

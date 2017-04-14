@@ -79,7 +79,7 @@
 		var td2 = document.createElement('td');
 		var td3 = document.createElement('td');
 		var text1 = document.createTextNode("IP");
-	    var text2 = document.createTextNode("PORT");
+	    var text2 = document.createTextNode("USERNAME");
 	    var text3 = document.createTextNode("STATUS");
 	    td1.appendChild(text1);
 	    td2.appendChild(text2);
@@ -97,7 +97,7 @@
 		    var td2 = document.createElement('td');
 		    var td3 = document.createElement('td');
 		    var text1 = document.createTextNode(message.details[i].ip);
-		    var text2 = document.createTextNode(message.details[i].port);
+		    var text2 = document.createTextNode(message.details[i].username);
 		    var text3 = document.createTextNode(message.details[i].status);
 		    td1.appendChild(text1);
 		    td2.appendChild(text2);

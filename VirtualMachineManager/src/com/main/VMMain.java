@@ -55,6 +55,8 @@ static Message messageObject;
 								break;
 			case "stop_vm":		response=obj.stopVM(message, messageObject);
 								break;
+			case "vm_info":		response=obj.getVMInfo(message,messageObject);
+								break;
 		}
 		return response;
 	}
