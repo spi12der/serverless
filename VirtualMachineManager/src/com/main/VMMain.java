@@ -8,11 +8,11 @@ public class VMMain
 {
 static Message messageObject;
 	
-	public static void main(String[] args) 
+	/*public static void main(String[] args) 
 	{
 		messageObject=new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();	
-	}
+	}*/
 	
 	/**
 	 * Method to process Request in separate thread
@@ -59,5 +59,17 @@ static Message messageObject;
 								break;
 		}
 		return response;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) 
+	{
+		messageObject=new Message(args[0],args[1],args[2],args[3]);
+		JSONObject re=new JSONObject();
+		re.put("request_id", "123");
+		JSONObject par=new JSONObject();
+		par.put("type", "start_vm");
+		re.put("parameters", par);
+		new VMMain().parseMessage(re);
 	}
 }

@@ -176,11 +176,11 @@ public class VMUtils
 			JSONObject serverDetails=null;
 			if(ip.isEmpty())
 			{
-				serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request");
+				serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=server_manager&&type=server_request");
 			}	
 			else
 			{
-				serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+ip);
+				serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=server_manager&&type=server_request&&ip="+ip);
 			}	
 			String IP=sponVM(serverDetails,vmNo);
 			addTag(serverDetails, machine, doc, vmNo,inputFile,IP);
@@ -339,6 +339,7 @@ public class VMUtils
 			machine=doc.createElement("machine");
 			machine.setAttribute("ip", (String) serverDetails.get("server_ip"));
 			machine.setAttribute("username", (String) serverDetails.get("server_username"));
+			machine.setAttribute("capacity", "2");
 			root.appendChild(machine);
 		}	
 		machine.appendChild(service);
