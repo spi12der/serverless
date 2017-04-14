@@ -42,6 +42,7 @@ public class ServerManagerMain
 		         public void run() 
 		         {
 		              JSONObject response=parseMessage(message);
+		              System.out.println(response.toJSONString());
 		              if(response!=null)
 		              {
 		            	  messageObject.sendMessage(response);
@@ -64,11 +65,11 @@ public class ServerManagerMain
 		{
 			case "server_request":	response=getAvailableServer(request);
 									break;
-			case "server_details":	response=getServerDetails();
+			case "server_details":	response=getServerDetails(request);
 									break;
-			case "update_server": 	updateServer(request);
+			case "update_server": 	response=updateServer(request);
 									break;
-			case "add_server":		addServer(request);
+			case "add_server":		response=addServer(request);
 									break;
 		}
 		return response;
@@ -85,6 +86,7 @@ public class ServerManagerMain
 		JSONObject response=new JSONObject();
 		response.put("type", "server_request");
 		response.put("queue", "gateway");
+		response.put("request_id", message.get("request_id"));
 		JSONObject parameters=(JSONObject)message.get("parameters");
 		if(parameters!=null && parameters.containsKey("ip"))
 			response=getServerWithIP(response, (String)message.get("ip"));
@@ -116,7 +118,7 @@ public class ServerManagerMain
 						 InetAddress inet = InetAddress.getByName(element.getAttribute("ip"));
 						 if(inet.isReachable(22))
 						 {
-							 response.put("status","yes");
+							 response.put("status","1");
 							 response.put("server_ip",element.getAttribute("ip"));
 							 response.put("server_username",element.getAttribute("username"));
 							 response.put("server_password",element.getAttribute("password"));
@@ -126,11 +128,12 @@ public class ServerManagerMain
 					 }	 
 				}
 			}
-			response.put("status","no");
+			response.put("status","0");
 			messageObject.logMessage("INFO", "No idle server available");
 		}
 		catch (Exception e) 
 		{
+			response.put("status","0");
 			e.printStackTrace();
 			messageObject.logMessage("ERROR", "Error in finding idle server =>"+e.getLocalizedMessage());
 		}
@@ -157,7 +160,7 @@ public class ServerManagerMain
 					 String ip=element.getAttribute("ip");
 					 if(ip.equalsIgnoreCase(IP))
 					 {
-						 response.put("status","yes");
+						 response.put("status","1");
 						 response.put("server_ip",element.getAttribute("ip"));
 						 response.put("server_username",element.getAttribute("username"));
 						 response.put("server_password",element.getAttribute("password"));
@@ -166,13 +169,14 @@ public class ServerManagerMain
 					 }	 
 				}
 			}
-			response.put("status","no");
+			response.put("status","0");
 			messageObject.logMessage("INFO", "No such server available");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 			messageObject.logMessage("ERROR", "Error in finding idle server =>"+e.getLocalizedMessage());
+			response.put("status","0");
 		}
 		return response;
 	}
@@ -182,9 +186,10 @@ public class ServerManagerMain
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONObject getServerDetails()
+	public JSONObject getServerDetails(JSONObject message)
 	{
 		JSONObject response=new JSONObject();
+		response.put("request_id", message.get("request_id"));
 		response.put("queue", "gateway");
 		try
 		{
@@ -203,7 +208,7 @@ public class ServerManagerMain
 					 Element element = (Element) node;
 					 JSONObject server=new JSONObject();
 					 server.put("ip",element.getAttribute("ip"));
-					 server.put("port",element.getAttribute("port"));
+					 server.put("username",element.getAttribute("username"));
 					 server.put("status",element.getAttribute("status"));
 					 serverArray.add(server);	 
 				}
@@ -226,8 +231,11 @@ public class ServerManagerMain
 	 * @param message
 	 * @return
 	 */
-	public void updateServer(JSONObject request)
+	@SuppressWarnings("unchecked")
+	public JSONObject updateServer(JSONObject request)
 	{
+		JSONObject response=new JSONObject();
+		response.put("request_id", request.get("request_id"));
 		JSONObject message=(JSONObject)request.get("parameters");
 		String ip=(String)message.get("server_ip");
 		String status=(String)message.get("status");
@@ -253,16 +261,22 @@ public class ServerManagerMain
 				}
 			}
 			messageObject.logMessage("INFO", "Server file updated sucessfully");
+			response.put("status", "1");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 			messageObject.logMessage("ERROR", "Error in updating servers file =>"+e.getLocalizedMessage());
+			response.put("status", "0");
 		}
+		return response;
 	}
 	
-	public void addServer(JSONObject request)
+	@SuppressWarnings("unchecked")
+	public JSONObject addServer(JSONObject request)
 	{
+		JSONObject response=new JSONObject();
+		response.put("request_id", request.get("request_id"));
 		JSONObject message=(JSONObject)request.get("parameters");
 		String ip=(String)message.get("ip");
 		String username=(String)message.get("username");
@@ -288,10 +302,14 @@ public class ServerManagerMain
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
 	        messageObject.logMessage("INFO", "Server added successfully ");
+	        response.put("status", "1");
 		}
 		catch (Exception e) 
 		{
+			e.printStackTrace();
 			messageObject.logMessage("ERROR", "Unable to add server =>"+e.getLocalizedMessage());
+			response.put("status", "0");
 		}
+		return response;
 	}
 }
