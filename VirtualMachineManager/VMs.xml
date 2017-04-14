@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+<machine capacity="4" ip="10.01.101.11" username="rohit">
+<vm ip="10.42.3.4" name="mc1" username="vagrant" password="vagrant" />
+<vm ip="10.34.22.44" name="mc2" password="vagrant" username="vagrant"/>
+</machine>
+</root>
