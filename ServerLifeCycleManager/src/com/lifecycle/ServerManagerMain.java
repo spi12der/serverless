@@ -209,7 +209,11 @@ public class ServerManagerMain
 					 JSONObject server=new JSONObject();
 					 server.put("ip",element.getAttribute("ip"));
 					 server.put("username",element.getAttribute("username"));
-					 server.put("status",element.getAttribute("status"));
+					 String status=element.getAttribute("status");
+					 if(status.equalsIgnoreCase("A"))
+						 server.put("status","IDLE");
+					 else
+						 server.put("status","OCCUPIED");
 					 serverArray.add(server);	 
 				}
 			}
