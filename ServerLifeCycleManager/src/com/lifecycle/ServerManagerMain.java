@@ -5,6 +5,10 @@ import java.net.InetAddress;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,49 +27,48 @@ public class ServerManagerMain
 	{
 		messageObject=new Message(args[0],args[1],args[2],args[3]);
 		messageObject.recieveMessage();	
-		new ServerManagerMain().processRequest();
 	}
 	
 	/**
 	 * Method to process Request in separate thread
 	 * @param message
 	 */
-	public void processRequest()
+	public void processRequest(JSONObject message)
 	{
-	    while(true)
-	    {
-	    	JSONObject message=Message.messageQueue.poll();
-	    	if(message!=null)
-	    	{
-	    		new Thread(new Runnable() 
-			    {
-			         public void run() 
-			         {
-			              JSONObject response=parseMessage(message);
-			              if(response!=null)
-			              {
-			            	  messageObject.sendMessage(response);
-			              }  
-			         }
-			    }).start();
-	    	}
-	    }
+		if(message!=null)
+    	{
+    		new Thread(new Runnable() 
+		    {
+		         public void run() 
+		         {
+		              JSONObject response=parseMessage(message);
+		              if(response!=null)
+		              {
+		            	  messageObject.sendMessage(response);
+		              }  
+		         }
+		    }).start();
+    	}
 	}
 	
 	/**
 	 * Method to parse the message and return response message for a request
 	 */
-	public JSONObject parseMessage(JSONObject message)
+	public JSONObject parseMessage(JSONObject request)
 	{
+		System.out.println("Message recieved");
 		JSONObject response=null;
+		JSONObject message=(JSONObject)request.get("parameters");
 		String type=(String)message.get("type");
 		switch(type)
 		{
-			case "server_request":	response=getAvailableServer(message);
+			case "server_request":	response=getAvailableServer(request);
 									break;
 			case "server_details":	response=getServerDetails();
 									break;
-			case "update_server": 	updateServer(message);
+			case "update_server": 	updateServer(request);
+									break;
+			case "add_server":		addServer(request);
 									break;
 		}
 		return response;
@@ -82,7 +85,8 @@ public class ServerManagerMain
 		JSONObject response=new JSONObject();
 		response.put("type", "server_request");
 		response.put("queue", "gateway");
-		if(message.containsKey("ip"))
+		JSONObject parameters=(JSONObject)message.get("parameters");
+		if(parameters!=null && parameters.containsKey("ip"))
 			response=getServerWithIP(response, (String)message.get("ip"));
 		else
 			response=getServer(response);
@@ -99,7 +103,7 @@ public class ServerManagerMain
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("servers");
+			NodeList nList = doc.getElementsByTagName("server");
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
@@ -110,11 +114,10 @@ public class ServerManagerMain
 					 if(status.equalsIgnoreCase("A"))
 					 {
 						 InetAddress inet = InetAddress.getByName(element.getAttribute("ip"));
-						 if(inet.isReachable(Integer.parseInt(element.getAttribute("port"))))
+						 if(inet.isReachable(22))
 						 {
 							 response.put("status","yes");
 							 response.put("server_ip",element.getAttribute("ip"));
-							 response.put("server_port",element.getAttribute("port"));
 							 response.put("server_username",element.getAttribute("username"));
 							 response.put("server_password",element.getAttribute("password"));
 							 messageObject.logMessage("INFO", "Idle server details sent to gateway");
@@ -144,7 +147,7 @@ public class ServerManagerMain
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("servers");
+			NodeList nList = doc.getElementsByTagName("server");
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
@@ -156,7 +159,6 @@ public class ServerManagerMain
 					 {
 						 response.put("status","yes");
 						 response.put("server_ip",element.getAttribute("ip"));
-						 response.put("server_port",element.getAttribute("port"));
 						 response.put("server_username",element.getAttribute("username"));
 						 response.put("server_password",element.getAttribute("password"));
 						 messageObject.logMessage("INFO", "Idle server details sent to gateway");
@@ -191,7 +193,7 @@ public class ServerManagerMain
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("servers");
+			NodeList nList = doc.getElementsByTagName("server");
 			JSONArray serverArray=new JSONArray();
 			for(int i=0;i<nList.getLength();i++)
 			{
@@ -224,8 +226,9 @@ public class ServerManagerMain
 	 * @param message
 	 * @return
 	 */
-	public void updateServer(JSONObject message)
+	public void updateServer(JSONObject request)
 	{
+		JSONObject message=(JSONObject)request.get("parameters");
 		String ip=(String)message.get("server_ip");
 		String status=(String)message.get("status");
 		try
@@ -235,7 +238,7 @@ public class ServerManagerMain
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(inputFile);
 			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("servers");
+			NodeList nList = doc.getElementsByTagName("server");
 			for(int i=0;i<nList.getLength();i++)
 			{
 				Node node = nList.item(i);
@@ -255,6 +258,40 @@ public class ServerManagerMain
 		{
 			e.printStackTrace();
 			messageObject.logMessage("ERROR", "Error in updating servers file =>"+e.getLocalizedMessage());
+		}
+	}
+	
+	public void addServer(JSONObject request)
+	{
+		JSONObject message=(JSONObject)request.get("parameters");
+		String ip=(String)message.get("ip");
+		String username=(String)message.get("username");
+		String password=(String)message.get("password");
+		try
+		{
+			File inputFile = new File("servers.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
+			NodeList nList = doc.getElementsByTagName("root");
+			Element server=doc.createElement("server");
+			server.setAttribute("ip", ip);
+			server.setAttribute("username", username);
+			server.setAttribute("password", password);
+			server.setAttribute("status", "A");
+			Element root=(Element)nList.item(0);			
+			root.appendChild(server);
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	        Transformer transformer = transformerFactory.newTransformer();
+	        DOMSource source = new DOMSource(doc);
+	        StreamResult consoleResult = new StreamResult(inputFile);
+	        transformer.transform(source, consoleResult);
+	        messageObject.logMessage("INFO", "Server added successfully ");
+		}
+		catch (Exception e) 
+		{
+			messageObject.logMessage("ERROR", "Unable to add server =>"+e.getLocalizedMessage());
 		}
 	}
 }
