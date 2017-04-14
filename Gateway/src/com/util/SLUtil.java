@@ -56,4 +56,16 @@ public class SLUtil
 		message.put("service_name", "logging");
 		return obj.process_request(message);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getServerDetails() throws Exception
+	{
+		RequestUtil obj=new RequestUtil();
+		JSONObject message=new JSONObject();
+		message.put("service_name", "server_manager");
+		JSONObject parameters=new JSONObject();
+		parameters.put("type", "server_details");
+		message.put("parameters", parameters);
+		return obj.process_request(message);
+	}
 }

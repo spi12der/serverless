@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/rabbit/slf4j-simple-1.7.22.jar"/>
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/rabbit/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="lib" path="/home/rohit/git/serverless/supportingDocuments/rabbit/amqp-client-4.1.0.jar"/>
-	<classpathentry kind="lib" path="/home/rohit/IIIT/Sem2/IAS/Project/JARS/messaging.jar"/>
 	<classpathentry kind="lib" path="/home/rohit/Downloads/jsch-0.1.42.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

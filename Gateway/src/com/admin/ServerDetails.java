@@ -1,14 +1,16 @@
 package com.admin;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import com.util.SLUtil;
 
 /**
  * Servlet implementation class ServerDetails
@@ -30,32 +32,18 @@ public class ServerDetails extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		JSONObject message=getDetails();
-		request.setAttribute("message", message.toJSONString());
-		request.getRequestDispatcher("JSP/ADMIN/Server.jsp").forward(request, response);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONObject dummy()
-	{
-		JSONObject s1=new JSONObject();
-		s1.put("ip", "10.0.2.102");
-		s1.put("port", "8080");
-		s1.put("status", "Occupied");
-		return s1;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public JSONObject getDetails()
-	{
-		JSONObject message=new JSONObject();
-		JSONArray arr=new JSONArray();
-		for(int i=0;i<40;i++)
+		SLUtil obj=new SLUtil();
+		try
 		{
-			arr.add(dummy());
-		}	
-		message.put("details", arr);
-		return message;
+			JSONObject message=obj.getServerDetails();
+			request.setAttribute("message", message.toJSONString());
+			request.getRequestDispatcher("JSP/ADMIN/Server.jsp").forward(request, response);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			response.sendRedirect("/Serverless/JSP/ADMIN/AdminHome.jsp?message=Unable to fetch server details. Retry..");
+		}
 	}
 
 	/**

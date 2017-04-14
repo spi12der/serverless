@@ -8,7 +8,7 @@
     <description>Location to store uploaded file</description> 
     <param-name>file-upload</param-name> 
     <param-value>
-         /home/rohit/JARS
+         /home/rohit/JARS/
      </param-value> 
 </context-param>
 </web-app>
