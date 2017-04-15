@@ -282,6 +282,7 @@ public class ServerManagerMain
 	{
 		JSONObject response=new JSONObject();
 		response.put("request_id", request.get("request_id"));
+		response.put("queue", "gateway");
 		JSONObject message=(JSONObject)request.get("parameters");
 		String ip=(String)message.get("ip");
 		String username=(String)message.get("username");

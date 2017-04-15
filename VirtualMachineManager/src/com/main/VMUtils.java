@@ -278,7 +278,7 @@ public class VMUtils
 		String username=(String)serverDetails.get("server_username");
 		String ip=(String)serverDetails.get("server_ip");
 		String password=(String)serverDetails.get("server_password");		
-		String IP=runScript("bash machinestartup.sh "+ip+" "+username+" "+password+" mc"+vmNo+" | tail -1 ");
+		String IP=runScript("bash tesh.sh "+ip+" "+username+" "+password+" mc"+vmNo);
 		return IP;
 	}
 	

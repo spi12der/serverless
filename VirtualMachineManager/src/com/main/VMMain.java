@@ -49,7 +49,7 @@ static Message messageObject;
 		VMUtils obj=new VMUtils();
 		switch(type)
 		{
-			case "vm details":	response=obj.getVMDetails(message,messageObject);
+			case "vm_details":	response=obj.getVMDetails(message,messageObject);
 								break;
 			case "start_vm":	response=obj.startVM(message, messageObject);
 								break;
