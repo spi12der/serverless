@@ -61,6 +61,9 @@ static Message messageObject;
 				case "logout":			Security sc3 = new Security();
 										response = sc3.logout(parameters);
 										break;
+				case "userplz":			Security sc4 = new Security();
+										response = sc4.logout(parameters);
+										break;
 			}
 		}
 		catch (Exception e) 

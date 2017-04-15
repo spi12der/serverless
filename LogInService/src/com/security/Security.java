@@ -75,26 +75,59 @@ public class Security {
 	public JSONObject Authorization(JSONObject message,Message messageObject)
 	{
 		JSONObject response=new JSONObject();
-		
+	    JSONArray DataArray = null;
 	    String Token=(String)message.get("token");
 	    String service_name=(String)message.get("service_name");
-	    
+	   
+		    
 		if(Token_Hash.get(Token) == null)
 			response.put("status","0");
+		
 		else if(Token_Hash.get(Token) != null)
 		{
-			JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=data_service&&type=select&&token="+Token+"&&service_name="+service_name);; 
+			String username = Token_Hash.get(Token);
+			JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=dataservice&&type=select&&db_name=admin&&tbl_name=us_map&&attributes=*&&conditions=service~"+service_name+"#user~"+username);
+			
+		    String status = (String)getDataService.get("status");
+		    System.out.println("status: " + status);
 		    
-			String status=(String)getDataService.get("status");
 		    if(status.equalsIgnoreCase("1"))
-		    	response.put("status","1");
-		    
+		    {
+		    	DataArray = (JSONArray)getDataService.get("result");
+		    	
+		    	if(DataArray.size() != 0)
+		    		response.put("status","1");
+		    	else
+		    		response.put("status", "0");
+		    }
+			 
 		    else
 		    	response.put("status","0");
-			
-		}
+		    
+		  }
+	System.out.println("resp: " + response);	
 	return response;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject userplz(JSONObject message)
+	{
+		JSONObject response=new JSONObject();
+		String Token=(String)message.get("token");
+		
+		if(Token_Hash.get(Token) == null)
+			response.put("status","0");
+		
+		else if(Token_Hash.get(Token) != null)
+		{
+		String username = Token_Hash.get(Token);
+		response.put("status",username);
+		response.put("status", "1");
+		}
+		return response;
+	}
+	
 	
 	
 	
@@ -147,13 +180,13 @@ public class Security {
 	    String Token=(String)message.get("token");
 	    
 	    if(Token_Hash.get(Token) == null)
-			response.put("status","1");
+			response.put("status","0");
 		else if(Token_Hash.get(Token) != null)
 		{
 			Token_Hash.remove(Token);
 			response.put("status","1");
 		}	
-	    
+	   //System.out.println("status: " + status);
 		return response;
 	}
 
