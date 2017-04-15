@@ -270,7 +270,8 @@ public class VMUtils
 		System.out.println("Starting a new Virtual machine");
 		String username=(String)serverDetails.get("server_username");
 		String ip=(String)serverDetails.get("server_ip");
-		String password=(String)serverDetails.get("server_password");		
+		String password=(String)serverDetails.get("server_password");
+		runScript("bash SingleMachineSetup.sh "+ip+" "+username+" "+password);
 		String IP=runScript("bash test.sh "+ip+" "+username+" "+password+" mc"+vmNo);
 		System.out.println("New virtual machine started");
 		return IP.substring(0,IP.length()-1);

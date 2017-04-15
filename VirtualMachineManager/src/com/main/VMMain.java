@@ -60,7 +60,7 @@ static Message messageObject;
 								break;
 		}
 		response.put("queue", "gateway");
-		request.put("request_id", request.get("request_id"));
+		response.put("request_id", request.get("request_id"));
 		return response;
 	}
 	
