@@ -22,7 +22,7 @@ public class ServiceManagerMain
 	 */
 	public void processRequest(JSONObject message)
 	{
-		if(message!=null)
+		/*if(message!=null)
     	{
     		new Thread(new Runnable() 
     	    {
@@ -44,7 +44,20 @@ public class ServiceManagerMain
     	                
     	         }
     	    }).start();
-    	}	
+    	}*/
+		JSONObject response;
+		try 
+		{
+			response = parseMessage(message);
+			if(response!=null)
+            {
+				messageObject.sendMessage(response);
+            }
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -74,11 +87,11 @@ public class ServiceManagerMain
 		if(message.containsKey("server"))
 		{
 			String IP=(String)((JSONObject)message.get("server")).get("IP");
-			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=vm_manager&&type=vm_info&&ip="+IP);
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=vm_manager&&type=vm_info&&ip="+IP);
 		}
 		else
 		{
-			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=vm_manager&&type=start_vm");
+			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=vm_manager&&type=start_vm");
 		}
 		JSONObject destination=new JSONObject();
 		destination.put("ip", serverDetails.get("ip"));
