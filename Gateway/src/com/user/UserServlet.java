@@ -40,7 +40,7 @@ public class UserServlet extends HttpServlet {
 		{
 			msg = helper.handleRequest(request, response);
 		} 
-		catch (InterruptedException e) 
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}

@@ -1,6 +1,5 @@
 package com.util;
 
-import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -70,7 +69,7 @@ public class RequestUtil
     }
     
     @SuppressWarnings("unchecked")
-	boolean validate(String token,String serviceName,String requestId) throws InterruptedException
+	boolean validate(String token,String serviceName,String requestId) throws Exception
     {
     	JSONObject details=new JSONObject();
 		details.put("token", token);
@@ -89,7 +88,7 @@ public class RequestUtil
     }
     
     @SuppressWarnings("unchecked")
-	public JSONObject forward_request(JSONObject container) throws InterruptedException
+	public JSONObject forward_request(JSONObject container) throws Exception
 	{
     	String serviceName=(String)container.get("service_name");
     	String x= (String)container.get("request_id");
@@ -106,23 +105,9 @@ public class RequestUtil
 		return message;
 	}
     
-    
-   
-    
-    /* For Deployment Assembly: Right click on WAR in eclipse-> Buildpath -> Configure Build path -> Deployment Assembly (left Pane) -> Add -> External file system -> Add -> Select your jar -> Add -> Finish.*/
-    
-	@SuppressWarnings("unchecked")
-	
-	// what to do if same parameter name
-	// format of req www.aw.com/servlet/service_name?name=hello
-	// it should be like this www.aw.com/servlet?name=hello
-	
-	public JSONObject process_request(JSONObject container) throws InterruptedException
-	{
-		String x=new Integer(incrementCount()).toString();
-		container.put("request_id", x);
-		String serviceName=(String)container.get("service_name");
-		boolean forward_this_request = true;
+    public boolean isAuthorized(String serviceName,JSONObject container,String x) throws Exception
+    {
+    	boolean forward_this_request = true;
 		if(!serviceName.equals("security"))
 		{
 			// user must have a valid token
@@ -141,6 +126,23 @@ public class RequestUtil
 				forward_this_request=false;
 			}
 		}
+		return forward_this_request;
+    }
+    
+    /* For Deployment Assembly: Right click on WAR in eclipse-> Buildpath -> Configure Build path -> Deployment Assembly (left Pane) -> Add -> External file system -> Add -> Select your jar -> Add -> Finish.*/
+    
+	@SuppressWarnings("unchecked")
+	
+	// what to do if same parameter name
+	// format of req www.aw.com/servlet/service_name?name=hello
+	// it should be like this www.aw.com/servlet?name=hello
+	
+	public JSONObject process_request(JSONObject container) throws Exception
+	{
+		String x=new Integer(incrementCount()).toString();
+		container.put("request_id", x);
+		String serviceName=(String)container.get("service_name");
+		boolean forward_this_request=isAuthorized(serviceName, container,x);
 		JSONObject msg=new JSONObject();
 		forward_this_request=true;
 		if(forward_this_request)
@@ -156,7 +158,7 @@ public class RequestUtil
 	
 	
 	@SuppressWarnings("unchecked")
-	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, InterruptedException 
+	public JSONObject handleRequest(HttpServletRequest req, HttpServletResponse res) throws Exception 
 	{
 		JSONObject container = new JSONObject();
 		JSONObject request_parameters = new JSONObject();
@@ -186,7 +188,7 @@ public class RequestUtil
 		
 	}
 	
-	public JSONObject getMessage(String x) throws InterruptedException
+	public JSONObject getMessage(String x) throws Exception
 	{
 		JSONObject response=null;
 		synchronized (Thread.currentThread()) 

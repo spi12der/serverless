@@ -86,9 +86,9 @@ public class ServiceManagerMain
 		destination.put("password", serverDetails.get("password"));
 		if(!message.containsKey("server"))
 		{
-			obj.deployJar(session, "agent", destination);
+			obj.deployJar(session, "agent", destination,messageObject);
 		}
-		obj.deployJar(session, (String)message.get("service_name"), destination);
+		obj.deployJar(session, (String)message.get("service_name"), destination,messageObject);
 		message.put("queue", message.get("service_name"));
 		messageObject.sendMessage(message);
 	}

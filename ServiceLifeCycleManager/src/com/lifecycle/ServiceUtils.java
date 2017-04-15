@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
+import com.message.Message;
 
 public class ServiceUtils 
 {
@@ -12,16 +13,15 @@ public class ServiceUtils
 	 * Method to get the path for repository along with ip
 	 * @param serviceName
 	 */
-	public JSONObject getRepository(String serviceName)
+	@SuppressWarnings("unchecked")
+	public JSONObject getRepository(String serviceName,Message messageObject)
 	{
-		/*JSONObject repoDetails=new JSONObject();
+		JSONObject repoDetails=new JSONObject();
 		repoDetails.put("password", "ro123hit");
 		repoDetails.put("username", "rohit");
 		repoDetails.put("ip", "localhost");
-		repoDetails.put("path", "/home/rohit/IIIT/Sem2/table2.csv");
-		return repoDetails;*/
-		//Fetch repo details
-		return null;
+		JSONObject message=messageObject.callServiceURL("");
+		return repoDetails;
 	}
 	
 	public void copyJarHere(JSONObject source,Session session) throws Exception
@@ -47,9 +47,9 @@ public class ServiceUtils
 		channelExec.setCommand(cmd);
 	}
 	
-	public void deployJar(Session session,String serviceName,JSONObject destination) throws Exception
+	public void deployJar(Session session,String serviceName,JSONObject destination, Message messageObject) throws Exception
 	{
-		JSONObject source=getRepository(serviceName);
+		JSONObject source=getRepository(serviceName,messageObject);
 		String path=(String)source.get("path");
 		String jarName=path.substring(path.indexOf("/")+1);
 		copyJarHere(source, session);
