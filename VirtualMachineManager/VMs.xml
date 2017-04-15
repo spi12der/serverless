@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root>
-
-<machine capacity="2" ip="" username="">
-    <service ip="Hello World&#10;Error in Number of Arguments&#10;Enter &lt;IP&gt; &lt;USERNAME&gt; &lt;PASSWORD&gt; of a physical machine followed by the &lt;VM Name&gt; to start on it&#10;" name="mc1" password="vagrant" username="vagrant"/>
-  </machine>
-<machine capacity="2" ip="" username="">
-    <service ip="Hello World&#10;Error in Number of Arguments&#10;Enter &lt;IP&gt; &lt;USERNAME&gt; &lt;PASSWORD&gt; of a physical machine followed by the &lt;VM Name&gt; to start on it&#10;" name="mc1" password="vagrant" username="vagrant"/>
-  </machine>
-<machine capacity="2" ip="10.42.0.199" username="muzammil">
-    <service ip="Hello World&#10;Error in Number of Arguments&#10;Enter &lt;IP&gt; &lt;USERNAME&gt; &lt;PASSWORD&gt; of a physical machine followed by the &lt;VM Name&gt; to start on it&#10;" name="mc1" password="vagrant" username="vagrant"/>
+<machine capacity="2" ip="10.1.33.171" username="muzammil">
+    <vm ip="10.1.33.189" name="mc1" password="vagrant" username="vagrant"/>
+<vm ip="10.1.33.91&#10;" name="mc2" password="vagrant" username="vagrant"/>
   </machine>
 </root>

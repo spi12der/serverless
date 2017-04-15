@@ -163,12 +163,12 @@ public class VMUtils
 				if (node.getNodeType() == Node.ELEMENT_NODE) 
 				{
 					 Element element = (Element) node;
-					 NodeList childList=node.getChildNodes();
+					 NodeList childList=element.getElementsByTagName("vm");
 					 int capacity=Integer.parseInt(element.getAttribute("capacity"));
 					 if(capacity>childList.getLength())
 					 {
 						ip=element.getAttribute("ip"); 
-						vmNo=capacity+1;
+						vmNo=childList.getLength()+1;
 						machine=element;
 					 }	 
 				}
@@ -278,8 +278,8 @@ public class VMUtils
 		String username=(String)serverDetails.get("server_username");
 		String ip=(String)serverDetails.get("server_ip");
 		String password=(String)serverDetails.get("server_password");		
-		String IP=runScript("bash tesh.sh "+ip+" "+username+" "+password+" mc"+vmNo);
-		return IP;
+		String IP=runScript("bash test.sh "+ip+" "+username+" "+password+" mc"+vmNo);
+		return IP.substring(0,IP.length()-1);
 	}
 	
 	public String runScript(String command) throws Exception
@@ -328,7 +328,7 @@ public class VMUtils
 	
 	public void addTag(JSONObject serverDetails,Element machine,Document doc,int vmNo,File inputFile,String IP) throws Exception
 	{
-		Element service=doc.createElement("service");
+		Element service=doc.createElement("vm");
 		service.setAttribute("ip", IP);
 		service.setAttribute("name", "mc"+vmNo);
 		service.setAttribute("username", "vagrant");
