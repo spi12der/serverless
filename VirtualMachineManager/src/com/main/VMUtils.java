@@ -32,8 +32,6 @@ public class VMUtils
 	public JSONObject getVMInfo(JSONObject message,Message messageObject)
 	{
 		JSONObject vmDetails=new JSONObject();
-		vmDetails.put("queue", "gateway");
-		vmDetails.put("request_id", message.get("request_id"));
 		String IP=(String)((JSONObject)message.get("parameters")).get("ip");
 		try
 		{
@@ -87,8 +85,6 @@ public class VMUtils
 	public JSONObject getVMDetails(JSONObject message,Message messageObject)
 	{
 		JSONObject vmDetails=new JSONObject();
-		vmDetails.put("queue", "gateway");
-		vmDetails.put("request_id", message.get("request_id"));
 		try
 		{
 			File inputFile = new File("VMs.xml");
@@ -144,8 +140,6 @@ public class VMUtils
 	public JSONObject startVM(JSONObject message,Message messageObject)
 	{
 		JSONObject vmDetails=new JSONObject();
-		vmDetails.put("queue", "gateway");
-		vmDetails.put("request_id", message.get("request_id"));
 		try
 		{
 			File inputFile = new File("VMs.xml");
@@ -203,8 +197,6 @@ public class VMUtils
 	public JSONObject stopVM(JSONObject message,Message messageObject)
 	{
 		JSONObject vmDetails=new JSONObject();
-		vmDetails.put("queue", "gateway");
-		vmDetails.put("request_id", message.get("request_id"));
 		JSONObject parameters=(JSONObject)message.get("parameters");
 		String IP=(String)parameters.get("ip");
 		try

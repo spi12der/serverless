@@ -40,6 +40,7 @@ static Message messageObject;
 	/**
 	 * Method to parse the message and return response message for a request
 	 */
+	@SuppressWarnings("unchecked")
 	public JSONObject parseMessage(JSONObject request)
 	{
 		System.out.println("Message recieved");
@@ -58,6 +59,8 @@ static Message messageObject;
 			case "vm_info":		response=obj.getVMInfo(message,messageObject);
 								break;
 		}
+		response.put("queue", "gateway");
+		request.put("request_id", request.get("request_id"));
 		return response;
 	}
 	
