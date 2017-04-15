@@ -36,21 +36,22 @@ public class ServerManagerMain
 	 */
 	public void processRequest(JSONObject message)
 	{
-		if(message!=null)
+		/*if(message!=null)
     	{
     		new Thread(new Runnable() 
 		    {
 		         public void run() 
 		         {
-		              JSONObject response=parseMessage(message);
-		              System.out.println(response.toJSONString());
-		              if(response!=null)
-		              {
-		            	  messageObject.sendMessage(response);
-		              }  
+		                
 		         }
 		    }).start();
-    	}
+    	}*/
+		JSONObject response=parseMessage(message);
+        System.out.println(response.toJSONString());
+        if(response!=null)
+        {
+      	  messageObject.sendMessage(response);
+        }
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class ServerManagerMain
 		response.put("request_id", message.get("request_id"));
 		JSONObject parameters=(JSONObject)message.get("parameters");
 		if(parameters!=null && parameters.containsKey("ip"))
-			response=getServerWithIP(response, (String)message.get("ip"));
+			response=getServerWithIP(response, (String)parameters.get("ip"));
 		else
 			response=getServer(response);
 		return response;
