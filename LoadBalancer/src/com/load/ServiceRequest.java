@@ -44,8 +44,22 @@ public class ServiceRequest
 				{
 					 Element element = (Element) node;
 					 String status=element.getAttribute("status");
+					 String system=(String)element.getAttribute("system");
 					 double cpu=Double.parseDouble(element.getAttribute("cpu"));
-					 if(status.equalsIgnoreCase("up") && cpu<=75.0)
+					 if(system.equalsIgnoreCase("no") && status.equalsIgnoreCase("up") && cpu<=75.0)
+					 {
+						 NodeList childList=element.getElementsByTagName("service");
+						 for(int j=0;j<childList.getLength();j++)
+						 {
+							 Element cE = (Element)childList.item(j);
+							 String name=cE.getAttribute("name");
+							 if(servicename.equalsIgnoreCase(name))
+							 {
+								 flag=true;
+							 }		 
+						 }	 
+					 }
+					 else if(system.equalsIgnoreCase("yes") && status.equalsIgnoreCase("up"))
 					 {
 						 NodeList childList=element.getElementsByTagName("service");
 						 for(int j=0;j<childList.getLength();j++)
