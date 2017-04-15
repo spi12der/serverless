@@ -1,5 +1,6 @@
 package com.util;
 
+import org.apache.naming.java.javaURLContextFactory;
 import org.json.simple.JSONObject;
 
 public class SLUtil 
@@ -66,6 +67,33 @@ public class SLUtil
 		JSONObject parameters=new JSONObject();
 		parameters.put("type", "server_details");
 		message.put("parameters", parameters);
+		return obj.process_request(message);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject addServer(String username,String password,String ip) throws Exception
+	{
+		RequestUtil obj=new RequestUtil();
+		JSONObject message=new JSONObject();
+		message.put("service_name", "server_manager");
+		JSONObject parameters=new JSONObject();
+		parameters.put("type", "add_server");
+		parameters.put("username", username);
+		parameters.put("password", password);
+		parameters.put("ip", ip);
+		message.put("parameters", parameters);
+		return obj.process_request(message);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject getVMInfo() throws Exception
+	{
+		RequestUtil obj=new RequestUtil();
+		JSONObject parameter=new JSONObject();
+		parameter.put("type", "vm_details");
+		JSONObject message=new JSONObject();
+		message.put("service_name", "vm_manager");
+		message.put("parameters", parameter);
 		return obj.process_request(message);
 	}
 }

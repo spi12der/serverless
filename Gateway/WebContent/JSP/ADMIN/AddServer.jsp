@@ -74,15 +74,16 @@
 				<li><a class="selected" href="/Serverless/JSP/ADMIN/AddServer.jsp"> Add Server</a></li>
 				<li><a href="/Serverless/VM">Manage VM</a></li>
 				<li><a href="/Serverless/Logs"> Platform Logs</a></li>
-				<li><a class="selected" href="/Serverless/JSP/ADMIN/AddAdmin.jsp"> Add Admin</a></li>
+				<li><a href="/Serverless/JSP/ADMIN/AddAdmin.jsp"> Add Admin</a></li>
 				<li><a href="/Serverless/JSP/ADMIN/Contact.jsp"> Contact Us</a></li>
 				<li><a href="/Serverless/Logout"> Logout</a></li>
 			</ul>
 		</div>
 		<div class="content">
-			<h1 style="margin:5%">Add new admin</h1>
+			<h1 style="margin:5%">Add new server</h1>
+			<p style="color:red;margin:5%">${param.message}</p>
 			<div style="margin:2% auto;width:70%;border:1px solid black;">
-				<center><form name="form1" method="post" action="/Serverless/registration">
+				<center><form name="form1" method="post" action="/Serverless/AddServer">
 					<table>
 						<tr>
 							<td>Username:</td>
@@ -93,12 +94,12 @@
 							<td><input type="password" name="password" value="" required></td>
 						</tr>
 						<tr>
-							<td>Email ID:</td>
-							<td><input type="email" name="email" value="" required></td>	
+							<td>IP:</td>
+							<td><input type="ip" name="ip" value="" required></td>	
 						</tr>
 						<tr>
 							<td colspan="2" style="padding:5% 3% 3% 3%"><center>
-								<input type="submit">
+								<input type="submit" value="ADD">
 							</center></td>
 						</tr>
 					</table>

@@ -71,39 +71,16 @@
 			<ul id="nav">
 				<li><a href="/Serverless/JSP/ADMIN/AdminHome.jsp"> Home</a></li>
 				<li><a href="/Serverless/ServerDetails"> Manage Server</a></li>
-				<li><a class="selected" href="/Serverless/JSP/ADMIN/AddServer.jsp"> Add Server</a></li>
-				<li><a href="/Serverless/VM">Manage VM</a></li>
+				<li><a href="/Serverless/JSP/ADMIN/AddServer.jsp"> Add Server</a></li>
+				<li><a class="selected" href="/Serverless/VM">Manage VM</a></li>
 				<li><a href="/Serverless/Logs"> Platform Logs</a></li>
-				<li><a class="selected" href="/Serverless/JSP/ADMIN/AddAdmin.jsp"> Add Admin</a></li>
+				<li><a href="/Serverless/JSP/ADMIN/AddAdmin.jsp"> Add Admin</a></li>
 				<li><a href="/Serverless/JSP/ADMIN/Contact.jsp"> Contact Us</a></li>
 				<li><a href="/Serverless/Logout"> Logout</a></li>
 			</ul>
 		</div>
 		<div class="content">
-			<h1 style="margin:5%">Add new admin</h1>
-			<div style="margin:2% auto;width:70%;border:1px solid black;">
-				<center><form name="form1" method="post" action="/Serverless/registration">
-					<table>
-						<tr>
-							<td>Username:</td>
-							<td><input type="text" name="username" value="" required></td>	
-						</tr>
-						<tr>
-							<td>Password:</td>
-							<td><input type="password" name="password" value="" required></td>
-						</tr>
-						<tr>
-							<td>Email ID:</td>
-							<td><input type="email" name="email" value="" required></td>	
-						</tr>
-						<tr>
-							<td colspan="2" style="padding:5% 3% 3% 3%"><center>
-								<input type="submit">
-							</center></td>
-						</tr>
-					</table>
-				</form></center>
-			</div>	
+				
 		</div>
 	</div>
 	<footer id="footerContent"></footer>
