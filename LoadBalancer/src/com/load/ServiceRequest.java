@@ -46,7 +46,7 @@ public class ServiceRequest
 					 String status=element.getAttribute("status");
 					 String system=(String)element.getAttribute("system");
 					 double cpu=Double.parseDouble(element.getAttribute("cpu"));
-					 if(system.equalsIgnoreCase("no") && status.equalsIgnoreCase("up") && cpu<=75.0)
+					 if(system.equalsIgnoreCase("yes") && status.equalsIgnoreCase("up"))
 					 {
 						 NodeList childList=element.getElementsByTagName("service");
 						 for(int j=0;j<childList.getLength();j++)
@@ -59,7 +59,7 @@ public class ServiceRequest
 							 }		 
 						 }	 
 					 }
-					 else if(system.equalsIgnoreCase("yes") && status.equalsIgnoreCase("up"))
+					 else if(status.equalsIgnoreCase("up") && cpu<=75.0)
 					 {
 						 NodeList childList=element.getElementsByTagName("service");
 						 for(int j=0;j<childList.getLength();j++)
