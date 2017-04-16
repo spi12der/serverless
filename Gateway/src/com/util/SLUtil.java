@@ -1,6 +1,5 @@
 package com.util;
 
-import org.apache.naming.java.javaURLContextFactory;
 import org.json.simple.JSONObject;
 
 public class SLUtil 
@@ -94,6 +93,22 @@ public class SLUtil
 		JSONObject message=new JSONObject();
 		message.put("service_name", "vm_manager");
 		message.put("parameters", parameter);
+		return obj.process_request(message);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public JSONObject deployService(String path,String serviceName) throws Exception
+	{
+		JSONObject details=new JSONObject();
+		details.put("db_name", "admin");
+		details.put("tbl_name", "serviceInfo");
+		details.put("type", "insert");
+		details.put("attributes", "service,path");
+		details.put("values", serviceName+","+path);
+		JSONObject message=new JSONObject();
+		message.put("service_name", "dataservice");
+		message.put("parameters", details);
+		RequestUtil obj=new RequestUtil();
 		return obj.process_request(message);
 	}
 }

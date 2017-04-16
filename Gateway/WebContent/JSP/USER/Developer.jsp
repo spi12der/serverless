@@ -80,6 +80,7 @@
 		<div class="content">
 			<h2 style="margin:2%">Add New Developer Service</h2>
 			<br><br>
+			<p style="color:red;margin:2%">${param.message}</p>
 			<div style="margin:2% auto;padding:2%;width:70%;border:1px solid black;">
 			<center><form name="form1" method="post" enctype="multipart/form-data" action="/Serverless/Developer">
 					<table width="80%">

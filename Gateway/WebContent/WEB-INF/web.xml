@@ -4,11 +4,11 @@
   <welcome-file-list>
     <welcome-file>JSP/login.jsp</welcome-file>
   </welcome-file-list>
-  <context-param> 
-    <description>Location to store uploaded file</description> 
-    <param-name>file-upload</param-name> 
+  <context-param>
+    <description>Location to store uploaded file</description>
+    <param-name>file-upload</param-name>
     <param-value>
          /home/rohit/JARS/
-     </param-value> 
-</context-param>
+     </param-value>
+  </context-param>
 </web-app>
