@@ -142,7 +142,8 @@ public class RequestUtil
 		String x=new Integer(incrementCount()).toString();
 		container.put("request_id", x);
 		String serviceName=(String)container.get("service_name");
-		boolean forward_this_request=isAuthorized(serviceName, container,x);
+		//boolean forward_this_request=isAuthorized(serviceName, container,x);
+		boolean forward_this_request=true;
 		JSONObject msg=new JSONObject();
 		forward_this_request=true;
 		if(forward_this_request)

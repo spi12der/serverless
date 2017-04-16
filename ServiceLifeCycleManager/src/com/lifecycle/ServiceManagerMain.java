@@ -84,6 +84,7 @@ public class ServiceManagerMain
 		ServiceUtils obj=new ServiceUtils();
 		JSONObject serverDetails=null;
 		Session session=null;
+		String serviceName=(String)message.get("service_name");
 		if(message.containsKey("server"))
 		{
 			String IP=(String)((JSONObject)message.get("server")).get("IP");
@@ -92,6 +93,7 @@ public class ServiceManagerMain
 		else
 		{
 			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=vm_manager&&type=start_vm");
+			updateServer(serverDetails);
 		}
 		JSONObject destination=new JSONObject();
 		destination.put("ip", serverDetails.get("ip"));
@@ -101,8 +103,10 @@ public class ServiceManagerMain
 		{
 			obj.deployJar(session, "agent", destination,messageObject);
 		}
-		obj.deployJar(session, (String)message.get("service_name"), destination,messageObject);
+		obj.deployJar(session, serviceName, destination,messageObject);
 		message.put("queue", message.get("service_name"));
+		message.put("parameters", message.get("parameters"));
+		updateService(serverDetails, serviceName);
 		messageObject.sendMessage(message);
 	}
 	
@@ -111,5 +115,28 @@ public class ServiceManagerMain
 		//String IP=(String)((JSONObject)message.get("serverdetails")).get("IP");
 		//JSONObject serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=server_manager&&type=server_request&&ip="+IP);
 		//if no other VM is running on that machine update the servers.xml
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateServer(JSONObject serverDetails)
+	{
+		String ip=(String)serverDetails.get("ip");
+		JSONObject message=new JSONObject();
+		message.put("queue", "loadbalancer");
+		message.put("type", "update_server");
+		message.put("ip", ip);
+		messageObject.sendMessage(message);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateService(JSONObject serverDetails,String serviceName)
+	{
+		String ip=(String)serverDetails.get("ip");
+		JSONObject message=new JSONObject();
+		message.put("queue", "loadbalancer");
+		message.put("type", "update_service");
+		message.put("ip", ip);
+		message.put("service", serviceName);
+		messageObject.sendMessage(message);
 	}
 }

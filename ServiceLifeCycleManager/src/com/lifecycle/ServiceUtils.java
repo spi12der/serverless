@@ -25,8 +25,8 @@ public class ServiceUtils
 		repoDetails.put("password", "ro123hit");
 		repoDetails.put("username", "rohit");
 		repoDetails.put("ip", "localhost");
-		JSONObject message=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/Userservlet?servicename=dataservice&&type=select&&db_name=admin&&tbl_name=serviceInfo&&attributes=*&&conditions=service~"+serviceName);
-		JSONObject row=(JSONObject) ((JSONArray) message.get("message")).get(0);
+		JSONObject message=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=dataservice&&type=select&&db_name=admin&&tbl_name=serviceInfo&&attributes=*&&conditions=service~"+serviceName);
+		JSONObject row=(JSONObject) ((JSONArray) message.get("result")).get(0);
 		String path=(String) row.get("path");
 		String type=(String) row.get("type");
 		repoDetails.put("path", path);
@@ -61,19 +61,19 @@ public class ServiceUtils
 		{
 			String path=(String)source.get("path");
 			devPath=(String)source.get("dev");
-			String cmd1="./copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+devPath;
-			String cmd2="./copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+path;
+			String cmd1="bash copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+devPath;
+			String cmd2="bash copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+path;
 			runScript(cmd1);
 			runScript(cmd2);
 		}
 		else
 		{
 			devPath=(String)source.get("path");
-			String cmd="./copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+devPath;
+			String cmd="bash copy.sh "+i1+" "+u1+" "+p1+" "+i2+" "+u2+" "+p2+" "+devPath;
 			runScript(cmd);
 		}
 		messageObject.logMessage("INFO", serviceName+" jar copied sucessfully ");
-		String depCmd="./deploy.sh "+i2+" "+u2+" "+p2+" "+devPath.substring(devPath.lastIndexOf("/")+1)+" "+messageObject.getRabbitIP()+" "+serviceName+" "+serviceName+" "+Message.getGateWayAddr();
+		String depCmd="bash deploy.sh "+i2+" "+u2+" "+p2+" "+devPath.substring(devPath.lastIndexOf("/")+1)+" "+messageObject.getRabbitIP()+" "+serviceName+" "+serviceName+" "+Message.getGateWayAddr();
 		runScript(depCmd);
 		messageObject.logMessage("INFO", serviceName+" jar deployed sucessfully ");
 	}	
