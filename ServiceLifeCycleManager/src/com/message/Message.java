@@ -144,6 +144,7 @@ public class Message
 	@SuppressWarnings("unchecked")
 	public void logMessage(String messageType,String message)
 	{
+		System.out.println(message);
 		message=moduleName+" : "+message;
 		JSONObject logObject=new JSONObject();
 		logObject.put("queue", "logging");

@@ -66,6 +66,7 @@ public class ServiceManagerMain
 	 */
 	public JSONObject parseMessage(JSONObject message) throws Exception
 	{
+		System.out.println("Message Recieved");
 		JSONObject response=null;
 		String type=(String)message.get("type");
 		switch(type)
@@ -85,6 +86,7 @@ public class ServiceManagerMain
 		JSONObject serverDetails=null;
 		Session session=null;
 		String serviceName=(String)message.get("service_name");
+		messageObject.logMessage("INFO", "Calling VM manager for VM details");
 		if(message.containsKey("server"))
 		{
 			String IP=(String)((JSONObject)message.get("server")).get("IP");
@@ -95,6 +97,7 @@ public class ServiceManagerMain
 			serverDetails=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=vm_manager&&type=start_vm");
 			updateServer(serverDetails);
 		}
+		messageObject.logMessage("INFO", "Fetched details from VM");
 		JSONObject destination=new JSONObject();
 		destination.put("ip", serverDetails.get("ip"));
 		destination.put("username", serverDetails.get("username"));
@@ -102,8 +105,10 @@ public class ServiceManagerMain
 		if(!message.containsKey("server"))
 		{
 			obj.deployJar(session, "agent", destination,messageObject);
+			messageObject.logMessage("INFO", "Deployed agent on VM");
 		}
 		obj.deployJar(session, serviceName, destination,messageObject);
+		messageObject.logMessage("INFO", "Deployed "+serviceName+" on VM");
 		message.put("queue", message.get("service_name"));
 		message.put("parameters", message.get("parameters"));
 		updateService(serverDetails, serviceName);
