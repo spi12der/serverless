@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -95,6 +96,9 @@ public class UpdateTable
 			}
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
@@ -129,6 +133,9 @@ public class UpdateTable
 			root.appendChild(server);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	        Transformer transformer = transformerFactory.newTransformer();
+	        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+	        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 	        DOMSource source = new DOMSource(doc);
 	        StreamResult consoleResult = new StreamResult(inputFile);
 	        transformer.transform(source, consoleResult);
