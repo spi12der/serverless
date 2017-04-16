@@ -103,8 +103,8 @@ public class SLUtil
 		details.put("db_name", "admin");
 		details.put("tbl_name", "serviceInfo");
 		details.put("type", "insert");
-		details.put("attributes", "service,path");
-		details.put("values", serviceName+","+path);
+		details.put("attributes", "service,path,type");
+		details.put("values", serviceName+","+path+",dev");
 		JSONObject message=new JSONObject();
 		message.put("service_name", "dataservice");
 		message.put("parameters", details);
