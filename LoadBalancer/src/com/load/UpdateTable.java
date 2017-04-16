@@ -128,7 +128,7 @@ public class UpdateTable
 			Element server=doc.createElement("server");
 			server.setAttribute("ip", IP);
 			server.setAttribute("status", "up");
-			server.setAttribute("cpu", "0.0");
+			server.setAttribute("cpu", "20.0");
 			Element root=(Element)nList.item(0);			
 			root.appendChild(server);
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
