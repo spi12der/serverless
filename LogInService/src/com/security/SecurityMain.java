@@ -20,7 +20,7 @@ static Message messageObject;
 	{
 		if(message!=null)
 		{
-			/*new Thread(new Runnable() 
+			new Thread(new Runnable() 
 		    {
 		         public void run() 
 		         {
@@ -30,12 +30,12 @@ static Message messageObject;
 		            	  messageObject.sendMessage(response);
 		              }  
 		         }
-		    }).start()*/;
-		    JSONObject response=parseMessage(message);
-            if(response!=null)
-            {
-          	  messageObject.sendMessage(response);
-            }
+		    }).start();
+			    /*JSONObject response=parseMessage(message);
+		        if(response!=null)
+		        {
+		      	  messageObject.sendMessage(response);
+		        }*/
 		}  
 	}
 	
