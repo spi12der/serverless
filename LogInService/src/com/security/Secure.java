@@ -182,8 +182,7 @@ public class Security {
 		{
 			Token_Hash.remove(Token);
 			response.put("status","1");
-		}	
-	   //System.out.println("status: " + status);
+		}
 		return response;
 	}
 
