@@ -23,10 +23,7 @@ public class Security {
 	    JSONArray DataArray = null;
 	    String username=(String)message.get("username");
 	    String password=(String)message.get("password");
-	    
 	   
-	    //JSONObject getDataService = messageObject.callServiceURL(urlString);
-	    //String IP=(String)((JSONObject)message.get("server")).get("IP");
 	    JSONObject getDataService=messageObject.callServiceURL("http://"+Message.getGateWayAddr()+"/Serverless/UserServlet?service_name=dataservice&&type=sdlogin&&username="+username+"&&password="+password);
 	    String status=(String)getDataService.get("status");
 	    if(status.equalsIgnoreCase("1"))
