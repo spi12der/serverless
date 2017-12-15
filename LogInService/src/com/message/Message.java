@@ -136,7 +136,7 @@ public class Message
 		    channel.queueDeclare(SEND_QUEUE_NAME, false, false, false, null);
 		    String message = response.toJSONString();
 		    channel.basicPublish("", SEND_QUEUE_NAME, null, message.getBytes("UTF-8"));
-		    //System.out.println(" [x] Sent '" + message + "'");
+		    
 			channel.close();
 		    connection.close();	
 		}
@@ -163,9 +163,7 @@ public class Message
 		JSONObject message=new JSONObject();
 		try
 		{
-			//If the we are connect a PC in other network
-			//System.setProperty("http.proxyHost", "proxy.iiit.ac.in");
-		    //System.setProperty("http.proxyPort", "8080");
+			
 			URL url = new URL(urlString);
 			HttpURLConnection h = (HttpURLConnection)url.openConnection();
 			h.setRequestMethod("POST");
